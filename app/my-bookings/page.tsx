@@ -3,20 +3,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useListings } from "@/hooks/useListings";
 import { getBookingsByUserId } from "@/lib/storage/bookings";
-import { getListingById } from "@/lib/storage/listings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default function MyBookingsPage() {
   const { user } = useAuth();
+  const { listings } = useListings();
   const [bookings, setBookings] = useState<ReturnType<typeof getBookingsByUserId>>([]);
 
   useEffect(() => {
     if (!user?.id) return;
     setBookings(getBookingsByUserId(user.id));
   }, [user?.id]);
+
+  const getListingById = (id: string) => listings.find((l) => l.id === id);
 
   if (!user) {
     return (

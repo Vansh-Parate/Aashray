@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AASHRAY - Student Housing Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#FEFDFB', // Warm white
+                        surface: '#F7F4F0',    // Light cream
+                        primary: '#D4A574',    // Warm sand
+                        text: '#3E3530',       // Warm charcoal
+                        secondary: '#6B615B',  // Muted text
+                        sage: '#6B9F69',       // Vibrant Green
+                        terra: '#D89B6A',      // Accent Orange
+                        'surface-hover': '#F0EBE5'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    letterSpacing: {
+                        tight: '-0.02em',
+                        tighter: '-0.05em',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'marquee': 'marquee 25s linear infinite',
+                        'spin-slow': 'spin 10s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FEFDFB;
+            color: #3E3530;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .gradient-mesh {
+            background: radial-gradient(at 0% 0%, rgba(212, 165, 116, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(122, 155, 118, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(216, 155, 106, 0.05) 0px, transparent 50%);
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 3D Perspective for Cards */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-card border-b border-text/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#" class="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+                <div class="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                    <iconify-icon icon="solar:home-smile-linear" width="20"></iconify-icon>
+                </div>
+                AASHRAY
+            </a>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-text/60">
+                <a href="#features" class="hover:text-primary transition-colors">Features</a>
+                <a href="#how-it-works" class="hover:text-primary transition-colors">How it Works</a>
+                <a href="#testimonials" class="hover:text-primary transition-colors">Stories</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hidden sm:block text-sm font-medium hover:text-primary transition-colors">Login</a>
+                <a href="#" class="bg-text text-background px-5 py-2 rounded-full text-sm font-medium hover:bg-primary transition-colors duration-300">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen pt-24 pb-12 lg:pt-32 lg:pb-24 flex items-center overflow-hidden gradient-mesh">
+        <div class="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left Content -->
+            <div class="reveal-on-scroll z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-primary/20 text-xs font-medium text-text/70 mb-8 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-sage animate-pulse"></span>
+                    Trusted by 10,000+ students
+                </div>
+                
+                <h1 class="text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[1.1] text-text mb-6">
+                    Find Your Safe <br>
+                    <span class="text-primary/90">Haven Away</span> <br>
+                    From Home
+                </h1>
+                
+                <p class="text-lg md:text-xl text-text/60 max-w-lg leading-relaxed mb-10">
+                    Verified housing. Perfect roommates. Peace of mind. 
+                    The premium marketplace for student living.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="px-8 py-4 bg-primary text-white rounded-2xl font-medium text-sm hover:bg-primary/90 transition-all hover:scale-[1.02] shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                        <iconify-icon icon="solar:mortarboard-linear" width="20"></iconify-icon>
+                        I'm a Student
+                    </button>
+                    <button class="px-8 py-4 bg-transparent border border-text/10 text-text rounded-2xl font-medium text-sm hover:bg-surface transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+                        <iconify-icon icon="solar:key-linear" width="20"></iconify-icon>
+                        I'm an Owner
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Visual -->
+            <div class="relative h-[600px] w-full reveal-on-scroll perspective-1000">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-primary/20 to-sage/20 rounded-full blur-3xl -z-10"></div>
+                
+                <!-- Main Card -->
+                <div class="absolute top-10 right-0 sm:right-10 w-80 sm:w-96 bg-white rounded-3xl p-3 shadow-2xl shadow-primary/10 animate-float z-20 border border-white/50">
+                    <div class="relative h-64 w-full rounded-2xl overflow-hidden mb-4">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Apartment" class="w-full h-full object-cover">
+                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold shadow-sm">₹15k/mo</div>
+                    </div>
+                    <div class="px-2 pb-2">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-semibold text-lg text-text">Sunny Side Loft</h3>
+                            <div class="flex gap-0.5 text-primary text-xs">
+                                <iconify-icon icon="solar:star-bold"></iconify-icon>
+                                <iconify-icon icon="solar:star-bold"></iconify-icon>
+                                <iconify-icon icon="solar:star-bold"></iconify-icon>
+                                <iconify-icon icon="solar:star-bold"></iconify-icon>
+                                <iconify-icon icon="solar:star-bold"></iconify-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Marquee -->
+    <section class="py-10 border-y border-text/5 bg-surface/30 overflow-hidden">
+        <div class="relative w-full flex items-center">
+            <div class="absolute left-0 w-32 h-full bg-gradient-to-r from-background to-transparent z-10"></div>
+            <div class="absolute right-0 w-32 h-full bg-gradient-to-l from-background to-transparent z-10"></div>
+            <div class="flex gap-16 animate-marquee whitespace-nowrap items-center px-4">
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:buildings-linear"></iconify-icon> MIT</span>
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:atom-linear"></iconify-icon> Stanford</span>
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:book-linear"></iconify-icon> Harvard</span>
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:global-linear"></iconify-icon> IIT Bombay</span>
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:library-linear"></iconify-icon> BITS Pilani</span>
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:buildings-linear"></iconify-icon> MIT</span>
+                <span class="text-2xl font-semibold text-text/20 uppercase tracking-widest font-sans flex items-center gap-2"><iconify-icon icon="solar:atom-linear"></iconify-icon> Stanford</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- REDESIGNED BENTO GRID -->
+    <section id="features" class="py-32 bg-surface/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-32 reveal-on-scroll">
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tight text-text mb-6">Everything you need<br>in one place</h2>
+                <p class="text-xl text-secondary max-w-xl mx-auto">Powerful tools designed for students and owners.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
+                
+                <!-- 1. SMART DISCOVERY (2x2) -->
+                <div class="group col-span-1 md:col-span-2 row-span-2 relative bg-white rounded-[2.5rem] p-12 overflow-hidden border border-text/5 hover:border-primary/20 transition-all duration-500 hover:shadow-[0_30px_60px_rgba(212,165,116,0.12)] reveal-on-scroll flex flex-col justify-between h-[640px]">
+                    <!-- Map Background -->
+                    <div class="absolute inset-0 bg-[#F5F7FA] bg-[url('https://www.transparenttextures.com/patterns/map-light.png')] transition-transform duration-700 group-hover:scale-105"></div>
+                    
+                    <!-- Search Bar Mockup -->
+                    <div class="absolute top-12 left-12 right-12 z-20">
+                        <div class="bg-white rounded-full shadow-lg border border-text/5 px-6 py-4 flex items-center gap-4 max-w-md">
+                            <iconify-icon icon="solar:magnifer-linear" class="text-xl text-text/50"></iconify-icon>
+                            <div class="h-2 w-32 bg-surface rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Map Pins -->
+                    <div class="relative w-full h-[65%] mt-12 z-10 pointer-events-none">
+                        <!-- Pin 1 -->
+                        <div class="absolute top-[20%] left-[20%] group-hover:scale-110 transition-transform duration-300">
+                            <div class="bg-text text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg">₹12k</div>
+                            <div class="w-2 h-2 bg-text rotate-45 mx-auto -mt-1"></div>
+                        </div>
+                        <!-- Pin 2 -->
+                        <div class="absolute top-[35%] right-[25%] group-hover:scale-110 transition-transform duration-300 delay-100">
+                            <div class="bg-text text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg">₹8.5k</div>
+                            <div class="w-2 h-2 bg-text rotate-45 mx-auto -mt-1"></div>
+                        </div>
+                        
+                        <!-- Active Listing Popup -->
+                        <div class="absolute top-[40%] left-[35%] w-72 bg-white rounded-2xl shadow-2xl border border-text/5 p-3 group-hover:-translate-y-4 transition-transform duration-500 cursor-pointer pointer-events-auto">
+                            <div class="relative h-32 w-full rounded-xl overflow-hidden mb-3">
+                                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold">4.9 ★</span>
+                            </div>
+                            <div class="px-1 mb-1">
+                                <h4 class="font-bold text-lg text-text">Cozy Studio</h4>
+                                <div class="flex justify-between items-center mt-1">
+                                    <span class="font-bold text-primary">₹15,000</span>
+                                    <span class="text-[10px] bg-sage/10 text-sage px-2 py-1 rounded-md font-bold">98% Match</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative z-20 mt-auto bg-white/50 backdrop-blur-sm -mx-12 -mb-12 p-12 border-t border-text/5">
+                        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                            <iconify-icon icon="solar:map-point-bold" width="32"></iconify-icon>
+                        </div>
+                        <h3 class="text-4xl font-bold tracking-tight text-text mb-2">Smart Discovery</h3>
+                        <p class="text-lg text-secondary">Find verified housing on an interactive map.</p>
+                    </div>
+                </div>
+
+                <!-- 2. VIRTUAL TOURS (2x2) -->
+                <div class="group col-span-1 md:col-span-2 row-span-2 relative bg-black rounded-[2.5rem] overflow-hidden border border-text/5 reveal-on-scroll h-[640px]">
+                    <!-- Image -->
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center group-hover:scale-105 transition-transform duration-700"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30"></div>
+                    
+                    <!-- 360 UI Overlay -->
+                    <div class="absolute inset-0 flex flex-col justify-center items-center z-10">
+                        <div class="relative w-28 h-28 rounded-full border-2 border-white/30 flex items-center justify-center backdrop-blur-md cursor-pointer group-hover:scale-110 transition-transform duration-500 shadow-2xl">
+                            <div class="absolute inset-0 border border-white/40 rounded-full animate-ping opacity-20"></div>
+                            <iconify-icon icon="solar:360-view-linear" class="text-white text-6xl animate-spin-slow"></iconify-icon>
+                        </div>
+                        
+                        <!-- Navigation Arrows -->
+                        <div class="flex gap-12 mt-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-4 group-hover:translate-y-0">
+                             <iconify-icon icon="solar:arrow-left-linear" class="text-white/80 text-4xl"></iconify-icon>
+                             <iconify-icon icon="solar:arrow-right-linear" class="text-white/80 text-4xl"></iconify-icon>
+                        </div>
+                    </div>
+
+                    <!-- Top Controls -->
+                    <div class="absolute top-10 left-10 right-10 flex justify-between items-start z-20">
+                        <div class="bg-black/40 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-white text-sm font-bold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> Live View
+                        </div>
+                        <div class="bg-black/40 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl text-white font-medium flex gap-2">
+                            <iconify-icon icon="solar:gallery-linear"></iconify-icon> 4 of 12
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 w-full p-12 z-20">
+                         <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-white mb-6 border border-white/10">
+                            <iconify-icon icon="solar:camera-bold" width="32"></iconify-icon>
+                        </div>
+                        <h3 class="text-4xl font-bold tracking-tight text-white mb-2">Virtual Tours</h3>
+                        <p class="text-lg text-white/70">Explore every corner from the comfort of home.</p>
+                    </div>
+                </div>
+
+                <!-- 3. ROOMMATE MATCHING (1x1) -->
+                <div class="group col-span-1 relative bg-white rounded-[2.5rem] p-10 overflow-hidden border border-text/5 hover:border-terra/20 transition-all duration-500 hover:shadow-xl reveal-on-scroll flex flex-col h-[500px]">
+                    <div class="relative flex-1 flex justify-center items-center mb-4 perspective-1000">
+                        <!-- Stacked Cards -->
+                        <div class="absolute w-56 h-72 bg-white rounded-2xl border border-text/5 shadow-md scale-90 -rotate-6 translate-y-4 opacity-60"></div>
+                        <div class="absolute w-56 h-72 bg-white rounded-2xl border border-text/5 shadow-lg scale-95 rotate-3 translate-y-2 opacity-80"></div>
+                        
+                        <!-- Top Card -->
+                        <div class="relative w-56 h-72 bg-white rounded-2xl border border-text/5 shadow-2xl p-3 flex flex-col group-hover:-rotate-2 group-hover:translate-z-10 transition-transform duration-500">
+                            <div class="w-full h-40 bg-[url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80')] bg-cover bg-center rounded-xl mb-3"></div>
+                            <div class="px-2">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-lg text-text">Sarah, 21</span>
+                                    <span class="text-xs font-bold text-white bg-sage px-2 py-1 rounded-full">98%</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="text-lg bg-surface p-1 rounded">🧘‍♀️</span>
+                                    <span class="text-lg bg-surface p-1 rounded">📚</span>
+                                    <span class="text-lg bg-surface p-1 rounded">✨</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="absolute -bottom-6 flex gap-6 z-20">
+                            <div class="w-14 h-14 rounded-full bg-white shadow-xl border border-red-100 text-red-400 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"><iconify-icon icon="solar:close-circle-bold" width="32"></iconify-icon></div>
+                            <div class="w-14 h-14 rounded-full bg-white shadow-xl border border-green-100 text-green-500 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"><iconify-icon icon="solar:heart-bold" width="32"></iconify-icon></div>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <div class="w-12 h-12 rounded-xl bg-terra/10 flex items-center justify-center text-terra mb-4">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold" width="24"></iconify-icon>
+                        </div>
+                        <h3 class="text-3xl font-bold tracking-tight text-text mb-2">Match</h3>
+                        <p class="text-base text-secondary">Swipe to find your vibe.</p>
+                    </div>
+                </div>
+
+                <!-- 4. SAFETY FIRST (1x1) -->
+                <div class="group col-span-1 relative bg-white rounded-[2.5rem] p-10 overflow-hidden border border-text/5 hover:border-sage/20 transition-all duration-500 hover:shadow-xl reveal-on-scroll flex flex-col h-[500px]">
+                    <div class="flex-1 flex flex-col items-center justify-center">
+                        <div class="relative w-48 h-48 group-hover:scale-105 transition-transform duration-500">
+                            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-surface" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2" />
+                                <path class="text-sage drop-shadow-xl" stroke-dasharray="92, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-text">
+                                <span class="text-6xl font-bold tracking-tighter">92</span>
+                                <span class="text-xs uppercase tracking-widest font-bold opacity-40 mt-2">Score</span>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full space-y-3 mt-6 pl-4">
+                            <div class="flex items-center gap-4 text-base text-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                                <div class="w-6 h-6 rounded-full bg-sage/20 flex items-center justify-center text-sage"><iconify-icon icon="solar:check-circle-bold"></iconify-icon></div> Verified Owner
+                            </div>
+                            <div class="flex items-center gap-4 text-base text-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
+                                <div class="w-6 h-6 rounded-full bg-sage/20 flex items-center justify-center text-sage"><iconify-icon icon="solar:check-circle-bold"></iconify-icon></div> CCTV Secured
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="w-12 h-12 rounded-xl bg-sage/10 flex items-center justify-center text-sage mb-4">
+                            <iconify-icon icon="solar:shield-check-bold" width="24"></iconify-icon>
+                        </div>
+                        <h3 class="text-3xl font-bold tracking-tight text-text mb-2">Safety First</h3>
+                        <p class="text-base text-secondary">Rigorous 50-point checks.</p>
+                    </div>
+                </div>
+
+                <!-- 5. QUICK FILTERS (1x1) -->
+                <div class="group col-span-1 relative bg-surface rounded-[2.5rem] p-10 overflow-hidden border border-text/5 hover:border-primary/20 transition-all duration-500 reveal-on-scroll flex flex-col h-[500px]">
+                    <div class="flex-1 flex flex-col gap-4 items-center justify-center mb-6">
+                        <div class="w-full bg-white p-5 rounded-2xl border-2 border-primary shadow-lg flex items-center gap-4 transform group-hover:scale-105 transition-transform duration-300">
+                            <span class="text-2xl">💰</span> <span class="font-bold text-lg text-text">Under ₹10k</span>
+                        </div>
+                        <div class="w-full bg-white p-5 rounded-2xl border border-text/5 shadow-sm flex items-center gap-4 opacity-70 transform group-hover:scale-105 transition-transform duration-300 delay-75">
+                            <span class="text-2xl">❄️</span> <span class="font-bold text-lg text-text">AC Rooms</span>
+                        </div>
+                        <div class="w-full bg-white p-5 rounded-2xl border border-text/5 shadow-sm flex items-center gap-4 opacity-50 transform group-hover:scale-105 transition-transform duration-300 delay-150">
+                            <span class="text-2xl">🚇</span> <span class="font-bold text-lg text-text">Near Metro</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                            <iconify-icon icon="solar:slider-minimalistic-horizontal-bold" width="24"></iconify-icon>
+                        </div>
+                        <h3 class="text-3xl font-bold tracking-tight text-text mb-2">Quick Filters</h3>
+                        <p class="text-base text-secondary">Instant results for you.</p>
+                    </div>
+                </div>
+
+                <!-- 6. LIVE UPDATES (1x1) -->
+                <div class="group col-span-1 relative bg-white rounded-[2.5rem] p-10 overflow-hidden border border-text/5 hover:border-primary/20 transition-all duration-500 reveal-on-scroll flex flex-col h-[500px]">
+                    <div class="absolute top-10 right-10">
+                        <div class="relative">
+                            <iconify-icon icon="solar:bell-bing-bold" class="text-text text-4xl group-hover:rotate-12 transition-transform"></iconify-icon>
+                            <span class="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full border-4 border-white flex items-center justify-center text-[10px] font-bold text-white shadow-sm animate-pulse">3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col justify-center gap-4 mt-8">
+                        <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-lg flex items-center gap-4 transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600"><iconify-icon icon="solar:check-circle-bold" width="20"></iconify-icon></div>
+                            <div>
+                                <p class="text-sm font-bold text-text">Rent Paid</p>
+                                <p class="text-xs text-text/50">Just now</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-lg flex items-center gap-4 transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                             <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500"><iconify-icon icon="solar:heart-bold" width="20"></iconify-icon></div>
+                             <div>
+                                 <p class="text-sm font-bold text-text">New Match</p>
+                                 <p class="text-xs text-text/50">2m ago</p>
+                             </div>
+                         </div>
+                         <div class="bg-white/60 p-4 rounded-2xl border border-text/5 shadow-sm flex items-center gap-4 transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-200">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary"><iconify-icon icon="solar:home-smile-bold" width="20"></iconify-icon></div>
+                            <div>
+                                <p class="text-sm font-bold text-text">Bed Free</p>
+                                <p class="text-xs text-text/50">5m ago</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-text/5 flex items-center justify-center text-text mb-4">
+                            <iconify-icon icon="solar:bell-bold" width="24"></iconify-icon>
+                        </div>
+                        <h3 class="text-3xl font-bold tracking-tight text-text mb-2">Live Updates</h3>
+                        <p class="text-base text-secondary">Never miss a thing.</p>
+                    </div>
+                </div>
+
+                <!-- 7. OWNER DASHBOARD (3x1) -->
+                <div class="group col-span-1 md:col-span-2 lg:col-span-3 relative bg-white rounded-[2.5rem] p-12 overflow-hidden border border-text/5 hover:border-text/10 transition-all duration-500 reveal-on-scroll flex flex-col justify-between h-[420px]">
+                     <!-- Dashboard Mockup -->
+                     <div class="absolute top-12 right-12 w-[65%] h-[85%] bg-surface/30 rounded-tl-3xl border-l border-t border-text/5 p-6 overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-2xl">
+                        <!-- Stats Row -->
+                        <div class="grid grid-cols-4 gap-4 mb-8">
+                            <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-sm">
+                                <div class="text-secondary text-xs font-medium mb-1">Total Beds</div>
+                                <div class="text-2xl font-bold text-text">48</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-sm">
+                                <div class="text-secondary text-xs font-medium mb-1">Occupancy</div>
+                                <div class="text-2xl font-bold text-sage">92%</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-sm">
+                                <div class="text-secondary text-xs font-medium mb-1">Available</div>
+                                <div class="text-2xl font-bold text-terra">4</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-sm">
+                                <div class="text-secondary text-xs font-medium mb-1">Revenue</div>
+                                <div class="text-2xl font-bold text-text">₹4.2L</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-8">
+                            <!-- Occupancy Grid -->
+                            <div class="bg-white p-4 rounded-2xl border border-text/5 shadow-sm">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <div class="w-2 h-2 rounded-full bg-sage"></div>
+                                    <span class="text-xs font-bold uppercase tracking-wide text-secondary">Occupancy Grid</span>
+                                </div>
+                                <div class="grid grid-cols-6 gap-2">
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-red-300"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-red-300"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                    <div class="aspect-square rounded bg-sage/80 group-hover:bg-sage transition-colors"></div>
+                                </div>
+                            </div>
+                            <!-- List -->
+                            <div class="space-y-3 pt-2">
+                                <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-text/5">
+                                    <span class="text-xs font-medium pl-2">Room 101</span>
+                                    <span class="text-xs font-bold text-sage bg-sage/10 px-2 py-1 rounded">Paid</span>
+                                </div>
+                                <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-text/5">
+                                    <span class="text-xs font-medium pl-2">Room 102</span>
+                                    <span class="text-xs font-bold text-terra bg-terra/10 px-2 py-1 rounded">Pending</span>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+
+                     <div class="max-w-[30%]">
+                        <div class="w-14 h-14 rounded-2xl bg-text text-white flex items-center justify-center mb-6 shadow-lg">
+                            <iconify-icon icon="solar:graph-new-bold" width="32"></iconify-icon>
+                        </div>
+                        <h3 class="text-4xl font-bold tracking-tight text-text mb-3">Owner Dashboard</h3>
+                        <p class="text-lg text-secondary">Manage property, rent, and tenants in one view.</p>
+                     </div>
+                </div>
+
+                <!-- 8. INSTANT BOOKING (1x1) -->
+                <div class="group col-span-1 relative bg-sage/10 rounded-[2.5rem] p-10 overflow-hidden border border-sage/20 hover:border-sage/40 transition-all duration-500 reveal-on-scroll flex flex-col items-center text-center justify-between h-[420px]">
+                    <div class="mt-8 relative">
+                        <svg class="w-32 h-32 text-sage" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="283" stroke-dashoffset="283" class="group-hover:stroke-dashoffset-0 transition-all duration-700 ease-out" style="transform: rotate(-90deg); transform-origin: 50% 50%;"></circle>
+                            <path d="M30 50 L45 65 L70 35" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="100" stroke-dashoffset="100" class="group-hover:stroke-dashoffset-0 transition-all duration-500 delay-300"></path>
+                        </svg>
+                        <div class="absolute -right-2 -top-2 w-10 h-10 bg-white rounded-full flex items-center justify-center text-yellow-500 shadow-md animate-bounce">
+                            <iconify-icon icon="solar:bolt-bold" width="24"></iconify-icon>
+                        </div>
+                        <div class="mt-4 font-bold text-2xl text-sage">Booked!</div>
+                    </div>
+                    
+                    <div class="w-full text-left space-y-2 mt-4 pl-8">
+                         <li class="list-disc text-sm text-secondary">View listing</li>
+                         <li class="list-disc text-sm text-secondary">Choose bed</li>
+                         <li class="list-disc text-sm text-secondary">Confirm & Pay</li>
+                    </div>
+
+                    <div class="mt-2 w-full text-left">
+                        <div class="w-12 h-12 rounded-xl bg-sage flex items-center justify-center text-white mb-4 shadow-lg shadow-sage/30">
+                            <iconify-icon icon="solar:check-read-bold" width="24"></iconify-icon>
+                        </div>
+                         <h3 class="text-3xl font-bold tracking-tight text-text mb-2">Instant Book</h3>
+                         <p class="text-base text-secondary">Reserve in seconds.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-20 text-center reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Get started in minutes</h2>
+            </div>
+
+            <div class="relative grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="hidden md:block absolute top-16 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+                <div class="relative flex flex-col items-center text-center reveal-on-scroll" style="transition-delay: 100ms;">
+                    <div class="w-32 h-32 rounded-full bg-surface mb-6 flex items-center justify-center relative z-10 group cursor-default">
+                        <div class="absolute inset-0 rounded-full border border-primary/20 scale-100 group-hover:scale-110 transition-transform duration-500"></div>
+                        <iconify-icon icon="solar:magnifer-linear" class="text-4xl text-primary group-hover:scale-110 transition-transform"></iconify-icon>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold border-4 border-background">01</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Browse Listings</h3>
+                    <p class="text-text/60 text-sm">Explore verified student accommodations.</p>
+                </div>
+                <div class="relative flex flex-col items-center text-center reveal-on-scroll" style="transition-delay: 200ms;">
+                    <div class="w-32 h-32 rounded-full bg-surface mb-6 flex items-center justify-center relative z-10 group cursor-default">
+                        <div class="absolute inset-0 rounded-full border border-primary/20 scale-100 group-hover:scale-110 transition-transform duration-500"></div>
+                        <iconify-icon icon="solar:users-group-two-rounded-linear" class="text-4xl text-primary group-hover:scale-110 transition-transform"></iconify-icon>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold border-4 border-background">02</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Match Roommates</h3>
+                    <p class="text-text/60 text-sm">Find compatible people to share space.</p>
+                </div>
+                <div class="relative flex flex-col items-center text-center reveal-on-scroll" style="transition-delay: 300ms;">
+                    <div class="w-32 h-32 rounded-full bg-surface mb-6 flex items-center justify-center relative z-10 group cursor-default">
+                        <div class="absolute inset-0 rounded-full border border-sage/40 scale-100 group-hover:scale-110 transition-transform duration-500"></div>
+                        <iconify-icon icon="solar:shield-check-linear" class="text-4xl text-sage group-hover:scale-110 transition-transform"></iconify-icon>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-sage text-white flex items-center justify-center text-sm font-bold border-4 border-background">03</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Verify Safety</h3>
+                    <p class="text-text/60 text-sm">Check safety scores and amenities.</p>
+                </div>
+                <div class="relative flex flex-col items-center text-center reveal-on-scroll" style="transition-delay: 400ms;">
+                    <div class="w-32 h-32 rounded-full bg-surface mb-6 flex items-center justify-center relative z-10 group cursor-default">
+                        <div class="absolute inset-0 rounded-full border border-primary/20 scale-100 group-hover:scale-110 transition-transform duration-500"></div>
+                        <iconify-icon icon="solar:key-minimalistic-linear" class="text-4xl text-primary group-hover:scale-110 transition-transform"></iconify-icon>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold border-4 border-background">04</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Move In</h3>
+                    <p class="text-text/60 text-sm">Seamless paperwork and process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-20 border-y border-text/5 bg-surface/20">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-text/5">
+            <div class="text-center py-4 reveal-on-scroll">
+                <div class="text-5xl font-semibold text-text mb-2 tracking-tighter">10k+</div>
+                <div class="text-text/50 font-medium">Happy Students</div>
+            </div>
+            <div class="text-center py-4 reveal-on-scroll">
+                <div class="text-5xl font-semibold text-text mb-2 tracking-tighter">4.9</div>
+                <div class="text-text/50 font-medium">Average Rating</div>
+            </div>
+            <div class="text-center py-4 reveal-on-scroll">
+                <div class="text-5xl font-semibold text-text mb-2 tracking-tighter">100%</div>
+                <div class="text-text/50 font-medium">Verified Listings</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 -z-10"></div>
+        <div class="max-w-4xl mx-auto px-6 text-center reveal-on-scroll">
+            <h2 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 text-text">Ready to find your <br>perfect home?</h2>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                <button class="px-8 py-4 bg-primary text-white rounded-full font-medium text-lg hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 w-full sm:w-auto">
+                    Get Started Free
+                </button>
+                <button class="px-8 py-4 bg-white text-text border border-text/10 rounded-full font-medium text-lg hover:bg-surface transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <iconify-icon icon="solar:play-circle-linear" width="24"></iconify-icon> Watch Demo
+                </button>
+            </div>
+            <p class="text-sm text-text/40">No credit card required • Free forever for students</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-surface pt-20 pb-10 border-t border-text/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
+                <div class="col-span-2 lg:col-span-2">
+                    <a href="#" class="text-xl font-semibold tracking-tight text-text flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+                            <iconify-icon icon="solar:home-smile-linear" width="20"></iconify-icon>
+                        </div>
+                        AASHRAY
+                    </a>
+                    <p class="text-text/50 max-w-xs mb-6">Making student housing search simple, safe, and social. Find your tribe.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Product</h4>
+                    <ul class="space-y-3 text-sm text-text/60">
+                        <li><a href="#" class="hover:text-primary transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Trust & Safety</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="space-y-3 text-sm text-text/60">
+                        <li><a href="#" class="hover:text-primary transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-3 text-sm text-text/60">
+                        <li><a href="#" class="hover:text-primary transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Terms</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-text/5 text-xs text-text/40">
+                <p>© 2026 AASHRAY Inc. All rights reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-primary"><iconify-icon icon="logos:twitter" width="16" class="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"></iconify-icon></a>
+                    <a href="#" class="hover:text-primary"><iconify-icon icon="logos:linkedin-icon" width="16" class="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"></iconify-icon></a>
+                    <a href="#" class="hover:text-primary"><iconify-icon icon="logos:instagram-icon" width="16" class="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"></iconify-icon></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

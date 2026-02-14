@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { getListingById } from "@/lib/storage/listings";
+import { useListings } from "@/hooks/useListings";
 import { isListingSaved, toggleSavedListing } from "@/lib/storage/saved-listings";
 import { createBooking } from "@/lib/storage/bookings";
 import { Button } from "@/components/ui/button";
@@ -16,8 +16,9 @@ export default function ListingDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { listings } = useListings();
   const id = params?.id as string;
-  const listing = id ? getListingById(id) : null;
+  const listing = id ? listings.find((l) => l.id === id) ?? null : null;
   const [saved, setSaved] = useState(user ? isListingSaved(user.id, id) : false);
 
   if (!listing) {

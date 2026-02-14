@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getRoommateProfilesExcludingUserId } from "@/lib/storage/roommates";
 import { getRoommateProfiles } from "@/lib/storage/roommates";
+import { fetchRoommateProfilesFromSupabase } from "@/lib/supabase/roommates";
 import { saveToStorage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { generateMockRoommateProfiles } from "@/lib/constants/mock-data";
@@ -40,20 +40,25 @@ export default function RoommateMatcherPage() {
   const [currentProfile, setCurrentProfile] = useState<RoommateProfile | null>(null);
 
   useEffect(() => {
-    let list = getRoommateProfiles();
-    if (list.length === 0 && typeof window !== "undefined") {
-      const mock = generateMockRoommateProfiles(20);
-      saveToStorage(STORAGE_KEYS.ROOMMATE_PROFILES, mock);
-      list = mock;
-    }
-    const excludeUserId = user?.id ?? "none";
-    let filtered = getRoommateProfilesExcludingUserId(excludeUserId);
-    if (filtered.length === 0) filtered = list.filter((p) => p.userId !== excludeUserId);
-    const withScores = filtered.map((p) => {
-      const baseScore = user ? 50 + Math.floor(Math.random() * 50) : 70;
-      return enrichProfile(p, baseScore);
-    });
-    setProfiles(withScores);
+    const loadProfiles = async () => {
+      let list = await fetchRoommateProfilesFromSupabase();
+      if (list.length === 0) {
+        list = getRoommateProfiles();
+        if (list.length === 0 && typeof window !== "undefined") {
+          const mock = generateMockRoommateProfiles(20);
+          saveToStorage(STORAGE_KEYS.ROOMMATE_PROFILES, mock);
+          list = mock;
+        }
+      }
+      const excludeUserId = user?.id ?? "none";
+      const filtered = list.filter((p) => p.userId !== excludeUserId);
+      const withScores = filtered.map((p) => {
+        const baseScore = user ? 50 + Math.floor(Math.random() * 50) : 70;
+        return enrichProfile(p, baseScore);
+      });
+      setProfiles(withScores);
+    };
+    loadProfiles();
   }, [user?.id]);
 
   return (

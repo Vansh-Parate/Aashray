@@ -2,13 +2,14 @@
 
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getListingsByWardenId } from "@/lib/storage/listings";
+import { useListings } from "@/hooks/useListings";
 import { getRentRecords } from "@/lib/storage/rent";
 import { RentTrackerTable } from "@/components/warden/RentTrackerTable";
 
 export default function RentTrackerPage() {
   const { user } = useAuth();
-  const listings = user?.role === "warden" ? getListingsByWardenId(user.id) : [];
+  const { listings: allListings } = useListings();
+  const listings = user?.role === "warden" ? allListings.filter((l) => l.warderId === user.id) : [];
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [key, setKey] = useState(0);
   const refresh = useCallback(() => setKey((k) => k + 1), []);
