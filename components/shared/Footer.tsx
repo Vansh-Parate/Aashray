@@ -6,8 +6,8 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
-            <Link href="/" className="font-accent text-lg font-bold text-primary-dark">
-              AASHRAY
+            <Link href="/" className="flex items-center gap-2">
+              <img src="/aashray-logo.png" alt="Aashray" className="h-8 w-auto" />
             </Link>
             <p className="mt-2 text-sm text-text-muted">
               Safe student housing discovery and management.

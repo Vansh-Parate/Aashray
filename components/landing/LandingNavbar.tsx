@@ -7,12 +7,9 @@ export function LandingNavbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-text flex items-center gap-2"
+          className="flex items-center gap-2"
         >
-          <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
-            <Home className="h-5 w-5" />
-          </div>
-          AASHRAY
+          <img src="/aashray-logo.png" alt="Aashray" className="h-14 w-auto py-1" />
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-text/60">
           <a href="#features" className="hover:text-primary transition-colors">

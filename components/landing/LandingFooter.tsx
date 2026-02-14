@@ -9,12 +9,9 @@ export function LandingFooter() {
           <div className="col-span-2 lg:col-span-2">
             <Link
               href="/"
-              className="text-xl font-semibold tracking-tight text-text flex items-center gap-2 mb-6"
+              className="flex items-center gap-2 mb-6"
             >
-              <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
-                <Home className="h-5 w-5" />
-              </div>
-              AASHRAY
+              <img src="/aashray-logo.png" alt="Aashray" className="h-8 w-auto" />
             </Link>
             <p className="text-text/50 max-w-xs mb-6">
               Making student housing search simple, safe, and social. Find your tribe.

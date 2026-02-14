@@ -47,8 +47,8 @@ export function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-surface-dark">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="font-accent text-xl font-bold text-primary-dark">
-            AASHRAY
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/aashray-logo.png" alt="Aashray" className="h-14 w-auto py-1" />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
