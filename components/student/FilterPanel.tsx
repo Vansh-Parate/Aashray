@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { AMENITY_LABELS } from "@/lib/constants/amenities";
 
 export interface FilterState {
@@ -66,10 +66,10 @@ export function FilterPanel({ filters, onApply }: FilterPanelProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Filter className="h-4 w-4 mr-2" />
+        <button className="flex items-center gap-2 border border-brand-gold text-brand-gold rounded-lg px-4 py-2 text-sm font-medium hover:bg-brand-gold/5 transition-colors self-start sm:self-auto">
+          <SlidersHorizontal className="w-4 h-4" />
           Filters
-        </Button>
+        </button>
       </SheetTrigger>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>

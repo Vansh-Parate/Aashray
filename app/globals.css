@@ -6,7 +6,8 @@
   --primary: #d4a574;
   --primary-light: #e8c9a0;
   --primary-dark: #b8865a;
-  --background: #fefdfb;
+  --background: 30 50% 99%;
+  --foreground: 20 10% 20%;
   --surface: #f7f4f0;
   --surface-dark: #e8e3dc;
   --text-primary: #3e3530;
@@ -18,10 +19,72 @@
   --safety-high: #7a9b76;
   --safety-medium: #d4a574;
   --safety-low: #c77567;
+  --card: 30 50% 99%;
+  --card-foreground: 20 10% 20%;
+  --popover: 30 50% 99%;
+  --popover-foreground: 20 10% 20%;
+  --primary-hsl: 27 42% 64%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 15% 95%;
+  --secondary-foreground: 20 10% 20%;
+  --muted: 30 15% 95%;
+  --muted-foreground: 20 6% 45%;
+  --accent: 30 15% 95%;
+  --accent-foreground: 20 10% 20%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 30 15% 88%;
+  --input: 30 15% 88%;
+  --ring: 27 42% 64%;
+  --radius: 0.75rem;
 }
 
 @layer base {
   body {
     @apply bg-background text-[var(--text-primary)] antialiased;
   }
+
+  .maplibregl-popup-content {
+    @apply bg-transparent ! shadow-none ! p-0 ! rounded-none !;
+  }
+
+  .maplibregl-popup-tip {
+    @apply hidden !;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* Map Background Pattern */
+.map-bg {
+  background-color: #f7f4f0;
+  background-image: radial-gradient(#e8e3dc 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Hide Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

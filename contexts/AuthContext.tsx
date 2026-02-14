@@ -22,7 +22,7 @@ interface AuthContextType {
     role: "student" | "warden",
     displayName?: string
   ) => Promise<{ error: Error | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string, role?: "student" | "warden") => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -98,30 +98,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signIn = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, role?: "student" | "warden") => {
       const { data, error } = await auth.signIn(email, password);
       if (error) return { error: error as Error };
-      const profile = getFromStorage<UserProfile | null>(
-        STORAGE_KEYS.USER_PROFILE,
-        null
-      );
-      if (profile) {
-        setUser(profile);
-        if (profile.role === "student") router.push("/discover");
-        else router.push("/warden/dashboard");
-      } else if (data?.user) {
-        const meta = (data.user as { user_metadata?: { role?: string } })
+      if (data?.user) {
+        const meta = (data.user as { user_metadata?: { role?: string; displayName?: string } })
           .user_metadata;
-        const newProfile: UserProfile = {
+        const profile: UserProfile = {
           id: data.user.id,
           email: data.user.email ?? email,
-          role: (meta?.role as "student" | "warden") ?? "student",
+          role: (meta?.role as "student" | "warden") ?? role ?? "student",
+          displayName: meta?.displayName,
           createdAt: new Date().toISOString(),
         };
-        saveToStorage(STORAGE_KEYS.USER_PROFILE, newProfile);
-        setUser(newProfile);
-        if (newProfile.role === "student") router.push("/discover");
-        else router.push("/warden/dashboard");
+        saveToStorage(STORAGE_KEYS.USER_PROFILE, profile);
+        setUser(profile);
+        if (profile.role === "warden") router.push("/warden/dashboard");
+        else router.push("/discover");
       }
       return { error: null };
     },

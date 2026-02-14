@@ -3,15 +3,28 @@ import type { Listing, RoommateProfile } from "@/types";
 
 const PLACEHOLDER_IMAGES = [
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
-  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
-  "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800",
-  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
-  "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800",
+  "https://images.unsplash.com/photo-1588012886079-baef0ac45fbd?w=600&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop&q=60",
+  "https://images.pexels.com/photos/19130094/pexels-photo-19130094.jpeg",
 ];
 
 export function generateMockListings(wardenId: string, count = 12): Listing[] {
   const types: Listing["type"][] = ["PG", "Hostel", "Apartment"];
-  const cities = ["Pune", "Mumbai", "Bangalore", "Delhi", "Hyderabad"];
+  const areas = [
+    "Andheri West", "Andheri East", "Versova", "Lokhandwala", "DN Nagar",
+    "Four Bungalows", "Juhu", "Oshiwara", "Jogeshwari West", "Azad Nagar",
+    "Chakala", "MIDC Andheri", "Marol", "Saki Naka", "Seven Bungalows",
+  ];
+  const coords = [
+    { lat: 19.1190, lng: 72.8460 }, { lat: 19.1197, lng: 72.8710 },
+    { lat: 19.1325, lng: 72.8195 }, { lat: 19.1280, lng: 72.8350 },
+    { lat: 19.1225, lng: 72.8380 }, { lat: 19.1370, lng: 72.8285 },
+    { lat: 19.1060, lng: 72.8270 }, { lat: 19.1340, lng: 72.8430 },
+    { lat: 19.1350, lng: 72.8520 }, { lat: 19.1165, lng: 72.8490 },
+    { lat: 19.1130, lng: 72.8670 }, { lat: 19.1100, lng: 72.8750 },
+    { lat: 19.1080, lng: 72.8840 }, { lat: 19.1010, lng: 72.8880 },
+    { lat: 19.1310, lng: 72.8230 },
+  ];
   const titles = [
     "Comfort Zone PG",
     "Student Haven Hostel",
@@ -39,15 +52,16 @@ export function generateMockListings(wardenId: string, count = 12): Listing[] {
     };
     const total = 10 + (i % 5) * 8;
     const occupied = Math.floor(total * (0.3 + (i % 7) * 0.1));
+    const area = areas[i % areas.length];
     const listing: Listing = {
       id: `listing_${i + 1}`,
-      warderId:wardenId,
+      warderId: wardenId,
       title: titles[i % titles.length] + (i > 11 ? ` ${i}` : ""),
       type: types[i % 3],
       location: {
-        address: `${100 + i} Main Street, Block ${i % 5}`,
-        city: cities[i % cities.length],
-        coordinates: { lat: 18.5 + i * 0.02, lng: 73.8 + i * 0.01 },
+        address: `${100 + i} ${area}, Andheri`,
+        city: "Mumbai",
+        coordinates: coords[i % coords.length],
       },
       pricing: {
         rent: 6000 + (i % 10) * 1500,
@@ -56,7 +70,7 @@ export function generateMockListings(wardenId: string, count = 12): Listing[] {
       },
       amenities,
       safetyScore: calculateSafetyScore(amenities),
-      images: PLACEHOLDER_IMAGES,
+      images: [PLACEHOLDER_IMAGES[i % PLACEHOLDER_IMAGES.length]],
       occupancy: { total, occupied, available: total - occupied },
       gender: (["Male", "Female", "Co-ed"] as const)[i % 3],
       rules: [
