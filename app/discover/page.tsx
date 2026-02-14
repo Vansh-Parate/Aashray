@@ -16,7 +16,7 @@ import { FilterPanel, defaultFilters, type FilterState } from "@/components/stud
 import { Footer } from "@/components/shared/Footer";
 
 const ITEMS_PER_PAGE = 8;
-const MOCK_DATA_VERSION = "v3-images";
+const MOCK_DATA_VERSION = "v5-three-images";
 
 function applyCategoryFilter(listings: import("@/types").Listing[], category: CategoryKey) {
   switch (category) {
@@ -53,16 +53,14 @@ export default function DiscoverPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!supabase) {
-      const current = getListings();
-      const storedVersion = localStorage.getItem("mock_data_version");
-      if (current.length === 0 || storedVersion !== MOCK_DATA_VERSION) {
-        const wardenId = user?.role === "warden" ? user.id : "warden_demo";
-        const mock = generateMockListings(wardenId, 15);
-        saveToStorage(STORAGE_KEYS.LISTINGS, mock);
-        localStorage.setItem("mock_data_version", MOCK_DATA_VERSION);
-        refresh();
-      }
+    const current = getListings();
+    const storedVersion = localStorage.getItem("mock_data_version");
+    if (current.length === 0 || storedVersion !== MOCK_DATA_VERSION) {
+      const wardenId = user?.role === "warden" ? user.id : "warden_demo";
+      const mock = generateMockListings(wardenId, 15);
+      saveToStorage(STORAGE_KEYS.LISTINGS, mock);
+      localStorage.setItem("mock_data_version", MOCK_DATA_VERSION);
+      refresh();
     }
   }, [user?.id, user?.role, refresh]);
 

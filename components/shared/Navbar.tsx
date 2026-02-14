@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -48,7 +49,14 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/aashray-logo.png" alt="Aashray" className="h-14 w-auto py-1" />
+            <Image
+              src="/aashray-logo.png"
+              alt="Aashray"
+              width={160}
+              height={56}
+              className="h-14 w-auto py-1 object-contain"
+              priority
+            />
           </Link>
 
           <div className="hidden md:flex items-center gap-6">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -7,7 +8,13 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <Link href="/" className="flex items-center gap-2">
-              <img src="/aashray-logo.png" alt="Aashray" className="h-8 w-auto" />
+              <Image
+                src="/aashray-logo.png"
+                alt="Aashray"
+                width={120}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
             </Link>
             <p className="mt-2 text-sm text-text-muted">
               Safe student housing discovery and management.

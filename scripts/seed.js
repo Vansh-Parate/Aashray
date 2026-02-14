@@ -15,11 +15,9 @@ require("dotenv").config({ path: ".env" });
 const { createClient } = require("@supabase/supabase-js");
 
 const PLACEHOLDER_IMAGES = [
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
-  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
-  "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800",
-  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
-  "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800",
+  "https://images.unsplash.com/photo-1588012886079-baef0ac45fbd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGhvdXNlc3xlbnwwfHwwfHx8MA%3D%3D",
+  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8fDA%3D",
+  "https://images.pexels.com/photos/19130094/pexels-photo-19130094.jpeg",
 ];
 
 function calculateSafetyScore(amenities) {

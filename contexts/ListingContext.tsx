@@ -28,7 +28,7 @@ export function ListingProvider({ children }: { children: React.ReactNode }) {
     if (supabase) {
       setIsLoading(true);
       const fromSupabase = await fetchListingsFromSupabase();
-      setListings(fromSupabase);
+      setListings(fromSupabase.length > 0 ? fromSupabase : getListings());
     } else {
       setListings(getListings());
     }

@@ -16,16 +16,15 @@ interface ListingCardProps {
 export const ListingCard = React.memo(function ListingCard(props: ListingCardProps) {
   const { listing, isSaved, onToggleSave } = props;
   const safetyLabel = getSafetyLabel(listing.safetyScore);
-  const firstImage = listing.images && listing.images[0];
+  const image = listing.images?.[0];
   const safetyDisplay = (listing.safetyScore / 20).toFixed(1);
 
   return (
     <Link href={`/listing/${listing.id}`} className="group cursor-pointer block">
-      {/* Image */}
       <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-dark mb-3">
-        {firstImage ? (
+        {image ? (
           <img
-            src={firstImage}
+            src={image}
             alt={listing.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />

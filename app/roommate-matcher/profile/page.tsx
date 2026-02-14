@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { getRoommateProfileByUserId } from "@/lib/storage/roommates";
+import { generateDemoRoommateProfileForUser } from "@/lib/constants/mock-data";
+import { getRoommateProfileByUserId, saveRoommateProfile } from "@/lib/storage/roommates";
 import { Button } from "@/components/ui/button";
 import { YourProfileCard } from "@/components/student/YourProfileCard";
 import type { RoommateProfile } from "@/types";
@@ -13,10 +14,20 @@ export default function RoommateProfilePage() {
   const [profile, setProfile] = useState<RoommateProfile | null>(null);
 
   useEffect(() => {
-    const userId = user?.id ?? "none";
-    const p = getRoommateProfileByUserId(userId);
-    setProfile(p ?? null);
-  }, [user?.id]);
+    if (typeof window === "undefined") return;
+    const userId = user?.id;
+    if (!userId) {
+      setProfile(null);
+      return;
+    }
+    let p = getRoommateProfileByUserId(userId);
+    if (!p) {
+      const demo = generateDemoRoommateProfileForUser(userId, user?.displayName);
+      saveRoommateProfile(demo);
+      p = demo;
+    }
+    setProfile(p);
+  }, [user?.id, user?.displayName]);
 
   return (
     <div className="container mx-auto px-4 py-8">
