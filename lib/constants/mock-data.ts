@@ -93,7 +93,7 @@ export function generateMockListings(wardenId: string, count = 12): Listing[] {
       },
       amenities,
       safetyScore: calculateSafetyScore(amenities),
-      images: [...PLACEHOLDER_IMAGES],
+      images: [PLACEHOLDER_IMAGES[i % PLACEHOLDER_IMAGES.length]],
       occupancy: { total, occupied, available: total - occupied },
       gender: (["Male", "Female", "Co-ed"] as const)[i % 3],
       rules: rulesPool.slice(0, 4 + (i % 3)),

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -47,8 +48,16 @@ export function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-lg border-b border-surface-dark">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="font-accent text-xl font-bold text-primary-dark">
-            AASHRAY
+          <Link href="/" className="flex items-center gap-2 font-accent text-xl font-bold text-primary-dark">
+            <Image
+              src="/logo.png"
+              alt="Aashray - Verified student housing and home security logo"
+              width={48}
+              height={48}
+              className="h-12 w-12 object-contain"
+              priority
+            />
+            <span>AASHRAY</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-6">

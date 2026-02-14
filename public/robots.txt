@@ -1,0 +1,5 @@
+# Aashray - Verified Student Housing
+User-agent: *
+Allow: /
+
+Sitemap: https://aashray.app/sitemap.xml

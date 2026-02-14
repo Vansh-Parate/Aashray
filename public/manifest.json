@@ -1,0 +1,17 @@
+{
+  "name": "Aashray - Verified Student Housing",
+  "short_name": "Aashray",
+  "description": "Find verified housing. Perfect roommates. Peace of mind.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#166534",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
