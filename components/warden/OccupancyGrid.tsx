@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils/cn";
+import { addRentForSingleTenant, removeRentForTenant } from "@/lib/storage/rent";
 import type { OccupancyGrid as OccupancyGridType, Listing } from "@/types";
 
 interface OccupancyGridProps {
@@ -57,6 +58,13 @@ export function OccupancyGrid({
 
   const saveBed = () => {
     if (!occupancy || !selectedBed) return;
+
+    const wasOccupied = selectedBed.bed.status === "Occupied";
+    const willBeOccupied = dialogStatus === "Occupied";
+    const newTenantId = willBeOccupied
+      ? (selectedBed.bed.tenantId || `tenant_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`)
+      : undefined;
+
     const updated = {
       ...occupancy,
       rooms: occupancy.rooms.map((room) =>
@@ -69,7 +77,7 @@ export function OccupancyGrid({
                   ...b,
                   status: dialogStatus,
                   tenantName: dialogStatus !== "Empty" ? tenantName : undefined,
-                  tenantId: dialogStatus === "Occupied" ? (b.tenantId || `tenant_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`) : undefined,
+                  tenantId: newTenantId,
                 }
                 : b
             ),
@@ -79,6 +87,30 @@ export function OccupancyGrid({
       updatedAt: new Date().toISOString(),
     };
     onUpdateOccupancy(updated);
+
+    // --- Auto-sync rent records ---
+    const currentListing = listings.find((l) => l.id === selectedListingId);
+    const rentAmount = currentListing?.pricing?.rent ?? 0;
+
+    if (!wasOccupied && willBeOccupied && tenantName && selectedListingId && rentAmount > 0) {
+      // Tenant assigned → create rent record for current month
+      addRentForSingleTenant({
+        listingId: selectedListingId,
+        tenantId: newTenantId!,
+        tenantName,
+        roomNumber: selectedBed.roomNumber,
+        bedNumber: selectedBed.bed.bedNumber,
+        rentAmount,
+      });
+    } else if (wasOccupied && !willBeOccupied && selectedListingId) {
+      // Tenant removed → remove unpaid rent records for this bed
+      removeRentForTenant({
+        listingId: selectedListingId,
+        roomNumber: selectedBed.roomNumber,
+        bedNumber: selectedBed.bed.bedNumber,
+      });
+    }
+
     setSelectedBed(null);
   };
 

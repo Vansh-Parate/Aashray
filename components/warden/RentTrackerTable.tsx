@@ -29,6 +29,10 @@ import {
   TrendingUp,
   TrendingDown,
   Wallet,
+  Bell,
+  Send,
+  Users,
+  X,
 } from "lucide-react";
 import { markRentAsPaid, generateMonthlyRent } from "@/lib/storage/rent";
 import { getOccupancyByListingId, getOrCreateOccupancyForListing } from "@/lib/storage/occupancy";
@@ -41,6 +45,15 @@ function formatDate(s: string) {
     month: "short",
     year: "numeric",
   });
+}
+
+interface OccupiedTenantInfo {
+  tenantName: string;
+  tenantId: string;
+  roomNumber: string;
+  bedNumber: string;
+  listingTitle: string;
+  listingId: string;
 }
 
 interface RentTrackerTableProps {
@@ -60,7 +73,11 @@ export function RentTrackerTable({
   onRefresh,
   listingMap,
 }: RentTrackerTableProps) {
-  const [message, setMessage] = useState<{ text: string; type: "success" | "warning" } | null>(null);
+  const [message, setMessage] = useState<{ text: string; type: "success" | "warning" | "info" } | null>(null);
+  const [occupiedTenants, setOccupiedTenants] = useState<OccupiedTenantInfo[]>([]);
+  const [showOccupiedPanel, setShowOccupiedPanel] = useState(false);
+  const [notifSending, setNotifSending] = useState<string | null>(null);
+
   const totalExpected = records.reduce((s, r) => s + r.amount, 0);
   const paidRecords = records.filter((r) => r.status === "Paid");
   const pendingRecords = records.filter((r) => r.status === "Pending");
@@ -69,6 +86,32 @@ export function RentTrackerTable({
   const totalPending = totalExpected - totalCollected;
   const collectionRate = totalExpected > 0 ? Math.round((totalCollected / totalExpected) * 100) : 0;
 
+  // Gather all currently occupied tenants across listings
+  const gatherOccupiedTenants = (): OccupiedTenantInfo[] => {
+    const tenants: OccupiedTenantInfo[] = [];
+    for (const listing of listings) {
+      let occupancy = getOccupancyByListingId(listing.id);
+      if (!occupancy) {
+        occupancy = getOrCreateOccupancyForListing(listing.id, listing.occupancy.total);
+      }
+      for (const room of occupancy.rooms) {
+        for (const bed of room.beds) {
+          if (bed.status === "Occupied" && bed.tenantName) {
+            tenants.push({
+              tenantName: bed.tenantName,
+              tenantId: bed.tenantId || "",
+              roomNumber: room.roomNumber,
+              bedNumber: bed.bedNumber,
+              listingTitle: listing.title,
+              listingId: listing.id,
+            });
+          }
+        }
+      }
+    }
+    return tenants;
+  };
+
   const generateRentForAll = () => {
     if (listings.length === 0) {
       setMessage({ text: "No listings found. Add a listing first.", type: "warning" });
@@ -76,31 +119,35 @@ export function RentTrackerTable({
       return;
     }
 
+    // Gather occupied tenants and show them
+    const tenants = gatherOccupiedTenants();
+    setOccupiedTenants(tenants);
+
     let totalGenerated = 0;
-    let totalOccupied = 0;
 
     for (const listing of listings) {
       let occupancy = getOccupancyByListingId(listing.id);
       if (!occupancy) {
         occupancy = getOrCreateOccupancyForListing(listing.id, listing.occupancy.total);
       }
-      // Count occupied beds
       const occupied = occupancy.rooms.flatMap((r) => r.beds).filter((b) => b.status === "Occupied" && b.tenantName);
-      totalOccupied += occupied.length;
       if (occupied.length > 0) {
         const generated = generateMonthlyRent(listing.id, selectedMonth, listing.pricing.rent, occupancy);
         totalGenerated += generated.length;
       }
     }
 
-    if (totalOccupied === 0) {
+    if (tenants.length === 0) {
       setMessage({ text: "No occupied beds found. Add tenants in Occupancy first.", type: "warning" });
+      setShowOccupiedPanel(false);
     } else if (totalGenerated === 0) {
       setMessage({ text: "Rent already generated for all occupied beds this month.", type: "warning" });
+      setShowOccupiedPanel(true);
     } else {
       setMessage({ text: `Generated rent for ${totalGenerated} tenant(s).`, type: "success" });
+      setShowOccupiedPanel(true);
     }
-    setTimeout(() => setMessage(null), 4000);
+    setTimeout(() => setMessage(null), 5000);
     onRefresh();
   };
 
@@ -111,6 +158,30 @@ export function RentTrackerTable({
 
   const handlePrintReceipt = (record: RentRecord) => {
     downloadReceipt(record, listingMap[record.listingId]);
+  };
+
+  const handleSendNotification = async (record: RentRecord) => {
+    setNotifSending(record.id);
+    try {
+      await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: record.tenantId,
+          type: record.status === "Paid" ? "rent_paid" : "rent_reminder",
+          title: record.status === "Paid" ? "Rent Payment Confirmed" : "Rent Payment Reminder",
+          message:
+            record.status === "Paid"
+              ? `Your rent of ₹${record.amount.toLocaleString()} for ${new Date(record.month + "-01").toLocaleString("default", { month: "long", year: "numeric" })} has been confirmed.`
+              : `Your rent of ₹${record.amount.toLocaleString()} for ${new Date(record.month + "-01").toLocaleString("default", { month: "long", year: "numeric" })} is due on ${formatDate(record.dueDate)}. Please pay on time.`,
+        }),
+      });
+      setMessage({ text: `Notification sent to ${record.tenantName}`, type: "success" });
+    } catch {
+      setMessage({ text: `Failed to send notification to ${record.tenantName}`, type: "warning" });
+    }
+    setNotifSending(null);
+    setTimeout(() => setMessage(null), 3000);
   };
 
   const months: string[] = [];
@@ -212,6 +283,61 @@ export function RentTrackerTable({
         </Card>
       </div>
 
+      {/* Occupied Tenants Panel — appears after Generate Rent */}
+      {showOccupiedPanel && occupiedTenants.length > 0 && (
+        <Card className="rounded-2xl border-primary/20 shadow-soft bg-primary/[0.03]">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Users className="w-4 h-4 text-primary-dark" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm text-text-primary">
+                  Occupied Beds ({occupiedTenants.length})
+                </h3>
+                <p className="text-xs text-text-muted">Tenants currently registered in your properties</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowOccupiedPanel(false)}
+              className="h-8 w-8 p-0 rounded-lg"
+            >
+              <X className="h-4 w-4 text-text-muted" />
+            </Button>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {occupiedTenants.map((t, i) => (
+                <div
+                  key={`${t.listingId}-${t.roomNumber}-${t.bedNumber}-${i}`}
+                  className="flex items-center gap-3 rounded-xl bg-white border border-surface-dark/50 px-3 py-2.5"
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="text-xs font-bold text-primary-dark">
+                      {t.tenantName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-text-primary truncate">{t.tenantName}</p>
+                    <p className="text-[11px] text-text-muted truncate">
+                      {t.listingTitle} · Room {t.roomNumber}, Bed {t.bedNumber}
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-safety-high/10 text-safety-high">
+                      <span className="w-1.5 h-1.5 rounded-full bg-safety-high" />
+                      Active
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Table Card */}
       <Card className="rounded-2xl border-surface-dark shadow-soft">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4">
@@ -249,7 +375,9 @@ export function RentTrackerTable({
         </CardHeader>
         {message && (
           <div className={`mx-6 mb-2 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 ${message.type === "warning"
-              ? "bg-accent-warning/15 text-accent-warning"
+            ? "bg-accent-warning/15 text-accent-warning"
+            : message.type === "info"
+              ? "bg-primary/10 text-primary-dark"
               : "bg-safety-high/15 text-safety-high"
             }`}>
             {message.type === "warning" ? (
@@ -306,7 +434,7 @@ export function RentTrackerTable({
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-1.5">
                           {r.status !== "Paid" && (
                             <Button
                               size="sm"
@@ -329,6 +457,22 @@ export function RentTrackerTable({
                               Receipt
                             </Button>
                           )}
+                          {/* Send Notification button */}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSendNotification(r)}
+                            disabled={notifSending === r.id}
+                            className="rounded-lg text-xs h-8 border-blue-400/30 text-blue-600 hover:bg-blue-50"
+                            title={r.status === "Paid" ? "Send payment confirmation" : "Send payment reminder"}
+                          >
+                            {notifSending === r.id ? (
+                              <RefreshCw className="h-3.5 w-3.5 mr-1 animate-spin" />
+                            ) : (
+                              <Bell className="h-3.5 w-3.5 mr-1" />
+                            )}
+                            Notify
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
