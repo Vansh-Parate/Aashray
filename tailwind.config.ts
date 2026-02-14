@@ -31,6 +31,11 @@ const config: Config = {
 				"safety-high": "#7A9B76",
 				"safety-medium": "#D4A574",
 				"safety-low": "#C77567",
+				text: "#3E3530",
+				secondary: "#6B615B",
+				sage: "#6B9F69",
+				terra: "#D89B6A",
+				"surface-hover": "#F0EBE5",
 				foreground: "hsl(var(--foreground))",
 				card: {
 					DEFAULT: "hsl(var(--card))",
@@ -39,10 +44,6 @@ const config: Config = {
 				popover: {
 					DEFAULT: "hsl(var(--popover))",
 					foreground: "hsl(var(--popover-foreground))",
-				},
-				secondary: {
-					DEFAULT: "hsl(var(--secondary))",
-					foreground: "hsl(var(--secondary-foreground))",
 				},
 				muted: {
 					DEFAULT: "hsl(var(--muted))",
@@ -60,9 +61,31 @@ const config: Config = {
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
 			},
+			letterSpacing: {
+				tighter: "-0.05em",
+				tight: "-0.02em",
+			},
+			animation: {
+				float: "float 6s ease-in-out infinite",
+				"float-delayed": "float 6s ease-in-out 3s infinite",
+				marquee: "marquee 25s linear infinite",
+				"spin-slow": "spin 10s linear infinite",
+			},
+			keyframes: {
+				float: {
+					"0%, 100%": { transform: "translateY(0)" },
+					"50%": { transform: "translateY(-20px)" },
+				},
+				marquee: {
+					"0%": { transform: "translateX(0%)" },
+					"100%": { transform: "translateX(-50%)" },
+				},
+			},
 			fontFamily: {
 				sans: ["var(--font-inter)", "system-ui", "sans-serif"],
 				accent: ["var(--font-outfit)", "system-ui", "sans-serif"],
+				dm: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+				display: ["var(--font-playfair)", "Georgia", "serif"],
 			},
 			screens: {
 				sm: "640px",

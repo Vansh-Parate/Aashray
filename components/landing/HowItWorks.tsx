@@ -1,61 +1,90 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, FileCheck, Home, BarChart3 } from "lucide-react";
+import { Search, Users, ShieldCheck, Key } from "lucide-react";
+import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
 
-const studentSteps = [
-  { icon: Search, title: "Sign up and set preferences", desc: "Create an account and tell us your budget and location." },
-  { icon: Home, title: "Discover and compare", desc: "Browse safety-scored listings on the map and save favorites." },
-  { icon: FileCheck, title: "Book and move in", desc: "Confirm your bed and get rent reminders in the app." },
-];
-
-const wardenSteps = [
-  { icon: FileCheck, title: "Add your property", desc: "List your PG or hostel with photos, pricing, and amenities." },
-  { icon: BarChart3, title: "Manage occupancy", desc: "Update bed status and track rent in one dashboard." },
-  { icon: Home, title: "Stay full", desc: "Students discover you and book; you get notified." },
+const steps = [
+  {
+    icon: Search,
+    title: "Browse Listings",
+    desc: "Explore verified student accommodations.",
+    num: "01",
+    accent: "primary",
+  },
+  {
+    icon: Users,
+    title: "Match Roommates",
+    desc: "Find compatible people to share space.",
+    num: "02",
+    accent: "primary",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Verify Safety",
+    desc: "Check safety scores and amenities.",
+    num: "03",
+    accent: "sage",
+  },
+  {
+    icon: Key,
+    title: "Move In",
+    desc: "Seamless paperwork and process.",
+    num: "04",
+    accent: "primary",
+  },
 ];
 
 export function HowItWorks() {
+  const { ref, isVisible } = useRevealOnScroll();
+
   return (
-    <section className="py-24">
-      <div className="container mx-auto px-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-          <h2 className="font-accent text-3xl font-bold text-text-primary sm:text-4xl">How it works</h2>
-          <p className="mt-4 text-text-secondary max-w-2xl mx-auto">Two simple flows: one for students, one for wardens.</p>
+    <section id="how-it-works" className="py-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="mb-20 text-center"
+        >
+          <h2 className="font-accent text-4xl md:text-5xl font-bold tracking-tight mb-4 text-text">
+            Get started in minutes
+          </h2>
         </motion.div>
-        <div className="grid lg:grid-cols-2 gap-16">
-          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-3xl border border-surface-dark bg-surface p-8">
-            <h3 className="text-xl font-semibold text-primary">For Students</h3>
-            <ul className="mt-6 space-y-6">
-              {studentSteps.map((s) => (
-                <li key={s.title} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                    <s.icon className="h-5 w-5" />
+
+        <div className="relative grid grid-cols-1 md:grid-cols-4 gap-12">
+          <div className="hidden md:block absolute top-16 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: (i + 1) * 0.1 }}
+                className="relative flex flex-col items-center text-center"
+              >
+                <div className="w-32 h-32 rounded-full bg-surface mb-6 flex items-center justify-center relative z-10 group cursor-default">
+                  <div className="absolute inset-0 rounded-full border border-primary/20 scale-100 group-hover:scale-110 transition-transform duration-500" />
+                  <Icon
+                    className={`h-10 w-10 group-hover:scale-110 transition-transform ${
+                      step.accent === "sage" ? "text-sage" : "text-primary"
+                    }`}
+                  />
+                  <div
+                    className={`absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-4 border-background ${
+                      step.accent === "sage" ? "bg-sage text-white" : "bg-primary text-white"
+                    }`}
+                  >
+                    {step.num}
                   </div>
-                  <div>
-                    <p className="font-medium text-text-primary">{s.title}</p>
-                    <p className="text-sm text-text-muted">{s.desc}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-3xl border border-surface-dark bg-surface p-8">
-            <h3 className="text-xl font-semibold text-primary">For Wardens</h3>
-            <ul className="mt-6 space-y-6">
-              {wardenSteps.map((s) => (
-                <li key={s.title} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                    <s.icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-text-primary">{s.title}</p>
-                    <p className="text-sm text-text-muted">{s.desc}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-text">{step.title}</h3>
+                <p className="text-text/60 text-sm">{step.desc}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

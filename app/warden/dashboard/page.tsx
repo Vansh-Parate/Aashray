@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { getListingsByWardenId } from "@/lib/storage/listings";
+import { useListings } from "@/hooks/useListings";
 import { getRentRecords } from "@/lib/storage/rent";
 import { Building2, Bed, Users, IndianRupee, Plus, LayoutGrid, Receipt } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 
 export default function WardenDashboardPage() {
   const { user } = useAuth();
-  const listings = user?.role === "warden" ? getListingsByWardenId(user.id) : [];
+  const { listings: allListings } = useListings();
+  const listings = user?.role === "warden" ? allListings.filter((l) => l.warderId === user.id) : [];
   const totalBeds = listings.reduce((s, l) => s + l.occupancy.total, 0);
   const occupiedBeds = listings.reduce((s, l) => s + l.occupancy.occupied, 0);
   const records = getRentRecords();

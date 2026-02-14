@@ -3,11 +3,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useListings } from "@/hooks/useListings";
-import { getSavedListingIds, toggleSavedListing } from "@/lib/storage/saved-listings";
 import { generateMockListings } from "@/lib/constants/mock-data";
 import { getListings } from "@/lib/storage/listings";
 import { saveToStorage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { getSavedListingIds, toggleSavedListing } from "@/lib/storage/saved-listings";
+import { supabase } from "@/lib/supabase/client";
 import { MapView } from "@/components/student/MapView";
 import { ListingCard } from "@/components/student/ListingCard";
 import { CategoryBar, type CategoryKey } from "@/components/student/CategoryBar";
@@ -26,7 +27,6 @@ function applyCategoryFilter(listings: import("@/types").Listing[], category: Ca
     case "budget":
       return listings.filter((l) => l.pricing.rent <= 10000);
     case "nearby":
-      // Sort by proximity to a central point (Pune center: 18.52, 73.85)
       return [...listings].sort((a, b) => {
         const distA = Math.abs(a.location.coordinates.lat - 18.52) + Math.abs(a.location.coordinates.lng - 73.85);
         const distB = Math.abs(b.location.coordinates.lat - 18.52) + Math.abs(b.location.coordinates.lng - 73.85);
@@ -44,7 +44,7 @@ function applyCategoryFilter(listings: import("@/types").Listing[], category: Ca
 
 export default function DiscoverPage() {
   const { user } = useAuth();
-  const { listings, refresh } = useListings();
+  const { listings, refresh, isLoading } = useListings();
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
@@ -53,14 +53,16 @@ export default function DiscoverPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const current = getListings();
-    const storedVersion = localStorage.getItem("mock_data_version");
-    if (current.length === 0 || storedVersion !== MOCK_DATA_VERSION) {
-      const wardenId = user?.role === "warden" ? user.id : "warden_demo";
-      const mock = generateMockListings(wardenId, 15);
-      saveToStorage(STORAGE_KEYS.LISTINGS, mock);
-      localStorage.setItem("mock_data_version", MOCK_DATA_VERSION);
-      refresh();
+    if (!supabase) {
+      const current = getListings();
+      const storedVersion = localStorage.getItem("mock_data_version");
+      if (current.length === 0 || storedVersion !== MOCK_DATA_VERSION) {
+        const wardenId = user?.role === "warden" ? user.id : "warden_demo";
+        const mock = generateMockListings(wardenId, 15);
+        saveToStorage(STORAGE_KEYS.LISTINGS, mock);
+        localStorage.setItem("mock_data_version", MOCK_DATA_VERSION);
+        refresh();
+      }
     }
   }, [user?.id, user?.role, refresh]);
 
@@ -128,7 +130,9 @@ export default function DiscoverPage() {
 
         {/* Listings Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {visibleListings.length === 0 ? (
+          {isLoading ? (
+            <p className="text-text-muted py-8 col-span-full">Loading listings...</p>
+          ) : visibleListings.length === 0 ? (
             <p className="text-text-muted py-8 col-span-full">
               No listings match your filters.
             </p>
