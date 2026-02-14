@@ -6,10 +6,11 @@ import {
   getOrCreateOccupancyForListing,
   saveOccupancy,
 } from "@/lib/storage/occupancy";
-import { getListingById } from "@/lib/storage/listings";
+import { useListings } from "@/hooks/useListings";
 import type { OccupancyGrid } from "@/types";
 
 export function useOccupancy(listingId: string | null) {
+  const { listings } = useListings();
   const [data, setData] = useState<OccupancyGrid | null>(null);
 
   const refresh = useCallback(() => {
@@ -17,7 +18,7 @@ export function useOccupancy(listingId: string | null) {
       setData(null);
       return;
     }
-    const listing = getListingById(listingId);
+    const listing = listings.find((l) => l.id === listingId);
     if (!listing) {
       setData(null);
       return;
@@ -27,7 +28,7 @@ export function useOccupancy(listingId: string | null) {
       listing.occupancy.total
     );
     setData(grid);
-  }, [listingId]);
+  }, [listingId, listings]);
 
   useEffect(() => {
     refresh();

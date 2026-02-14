@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useListings } from "@/hooks/useListings";
-import { getSavedListingIds, toggleSavedListing } from "@/lib/storage/saved-listings";
 import { generateMockListings } from "@/lib/constants/mock-data";
 import { getListings } from "@/lib/storage/listings";
 import { saveToStorage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { getSavedListingIds, toggleSavedListing } from "@/lib/storage/saved-listings";
+import { supabase } from "@/lib/supabase/client";
 import { MapView } from "@/components/student/MapView";
 import { ListingCard } from "@/components/student/ListingCard";
 import { FilterPanel, defaultFilters, type FilterState } from "@/components/student/FilterPanel";
@@ -15,19 +16,20 @@ import { cn } from "@/lib/utils/cn";
 
 export default function DiscoverPage() {
   const { user } = useAuth();
-  const { listings, refresh } = useListings();
+  const { listings, refresh, isLoading } = useListings();
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const current = getListings();
-    if (current.length === 0) {
-      const wardenId = user?.role === "warden" ? user.id : "warden_demo";
-      const mock = generateMockListings(wardenId, 15);
-      saveToStorage(STORAGE_KEYS.LISTINGS, mock);
-      refresh();
+    if (!supabase) {
+      const current = getListings();
+      if (current.length === 0) {
+        const wardenId = user?.role === "warden" ? user.id : "warden_demo";
+        saveToStorage(STORAGE_KEYS.LISTINGS, generateMockListings(wardenId, 15));
+        refresh();
+      }
     }
   }, [user?.id, user?.role, refresh]);
 
@@ -66,7 +68,9 @@ export default function DiscoverPage() {
           <MapView listings={filtered} selectedId={selectedId} onSelect={setSelectedId} />
         </div>
         <div className="lg:col-span-2 space-y-4 max-h-[600px] overflow-y-auto">
-          {filtered.length === 0 ? (
+          {isLoading ? (
+            <p className="text-text-muted py-8">Loading listings...</p>
+          ) : filtered.length === 0 ? (
             <p className="text-text-muted py-8">No listings match your filters.</p>
           ) : (
             filtered.map((listing) => (

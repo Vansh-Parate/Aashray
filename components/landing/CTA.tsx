@@ -2,33 +2,43 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
+import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
 
 export function CTA() {
+  const { ref, isVisible } = useRevealOnScroll();
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="py-24"
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isVisible ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8 }}
+      className="py-32 relative overflow-hidden"
     >
-      <div className="container mx-auto px-4 text-center">
-        <div className="mx-auto max-w-2xl rounded-3xl border border-surface-dark bg-surface p-12 shadow-soft">
-          <h2 className="font-accent text-3xl font-bold text-text-primary sm:text-4xl">
-            Ready to get started?
-          </h2>
-          <p className="mt-4 text-text-secondary">
-            Join as a student to find safe housing, or as a warden to manage your property.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Button size="lg" asChild>
-              <Link href="/signup?role=student">Sign up as Student</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/signup?role=warden">Sign up as Warden</Link>
-            </Button>
-          </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 -z-10" />
+      <div className="max-w-4xl mx-auto px-6 text-center">
+        <h2 className="font-accent text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-8 text-text">
+          Ready to find your
+          <br />
+          perfect home?
+        </h2>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+          <Link
+            href="/signup"
+            className="px-8 py-4 bg-primary text-white rounded-full font-medium text-lg hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 w-full sm:w-auto flex items-center justify-center"
+          >
+            Get Started Free
+          </Link>
+          <Link
+            href="#"
+            className="px-8 py-4 bg-white text-text border border-text/10 rounded-full font-medium text-lg hover:bg-surface transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
+          >
+            <Play className="h-6 w-6" />
+            Watch Demo
+          </Link>
         </div>
+        <p className="text-sm text-text/40">No credit card required • Free forever for students</p>
       </div>
     </motion.section>
   );

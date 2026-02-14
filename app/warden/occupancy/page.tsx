@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getListingsByWardenId } from "@/lib/storage/listings";
+import { useListings } from "@/hooks/useListings";
 import { useOccupancy } from "@/hooks/useOccupancy";
 import { saveOccupancy } from "@/lib/storage/occupancy";
 import { OccupancyGrid } from "@/components/warden/OccupancyGrid";
 
 export default function OccupancyPage() {
   const { user } = useAuth();
-  const listings = user?.role === "warden" ? getListingsByWardenId(user.id) : [];
-  const [selectedId, setSelectedId] = useState<string | null>(listings[0]?.id ?? null);
+  const { listings: allListings } = useListings();
+  const listings = user?.role === "warden" ? allListings.filter((l) => l.warderId === user.id) : [];
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (listings.length > 0 && (!selectedId || !listings.some((l) => l.id === selectedId))) {
+      setSelectedId(listings[0].id);
+    }
+  }, [listings, selectedId]);
+
   const { data: occupancy, updateOccupancy } = useOccupancy(selectedId);
 
   const handleUpdate = (grid: Parameters<typeof saveOccupancy>[0]) => {

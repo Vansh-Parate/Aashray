@@ -8,20 +8,31 @@ import React, {
   useState,
 } from "react";
 import { getListings } from "@/lib/storage/listings";
+import { fetchListingsFromSupabase } from "@/lib/supabase/listings";
+import { supabase } from "@/lib/supabase/client";
 import type { Listing } from "@/types";
 
 interface ListingContextType {
   listings: Listing[];
   refresh: () => void;
+  isLoading: boolean;
 }
 
 const ListingContext = createContext<ListingContextType | null>(null);
 
 export function ListingProvider({ children }: { children: React.ReactNode }) {
   const [listings, setListings] = useState<Listing[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setListings(getListings());
+  const refresh = useCallback(async () => {
+    if (supabase) {
+      setIsLoading(true);
+      const fromSupabase = await fetchListingsFromSupabase();
+      setListings(fromSupabase);
+    } else {
+      setListings(getListings());
+    }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -29,7 +40,7 @@ export function ListingProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   return (
-    <ListingContext.Provider value={{ listings, refresh }}>
+    <ListingContext.Provider value={{ listings, refresh, isLoading }}>
       {children}
     </ListingContext.Provider>
   );
