@@ -17,7 +17,7 @@ export function CompatibilityBreakdownSidebar({
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
-  const setOpen = isControlled ? (onToggle ?? (() => {})) : () => setInternalOpen((o) => !o);
+  const setOpen = isControlled ? (onToggle ?? (() => { })) : () => setInternalOpen((o) => !o);
 
   if (!profile) return null;
 
