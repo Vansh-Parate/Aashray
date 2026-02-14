@@ -79,8 +79,8 @@ export default function ListingDetailPage() {
         <div className="space-y-6">
           <SafetyScorecard score={listing.safetyScore} amenities={listing.amenities} />
           <div className="rounded-3xl border border-surface-dark bg-surface p-6">
-            <p className="text-2xl font-bold text-primary">₹{listing.pricing.rent.toLocaleString()}<span className="text-base font-normal text-text-muted">/month</span></p>
-            <p className="text-sm text-text-muted mt-1">Deposit: ₹{listing.pricing.deposit.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-primary" suppressHydrationWarning>₹{listing.pricing.rent.toLocaleString()}<span className="text-base font-normal text-text-muted">/month</span></p>
+            <p className="text-sm text-text-muted mt-1" suppressHydrationWarning>Deposit: ₹{listing.pricing.deposit.toLocaleString()}</p>
             <p className="text-sm text-text-muted mt-2">{listing.occupancy.available} beds available · {listing.gender}</p>
             <div className="flex gap-2 mt-4">
               <Button onClick={handleBook} className="flex-1">Book now</Button>

@@ -57,11 +57,11 @@ export function generateMonthlyRent(
   const records: RentRecord[] = [];
   for (const room of occupancy.rooms) {
     for (const bed of room.beds) {
-      if (bed.status === "Occupied" && bed.tenantId && bed.tenantName) {
+      if (bed.status === "Occupied" && bed.tenantName) {
         const record: RentRecord = {
           id: generateId(),
           listingId,
-          tenantId: bed.tenantId,
+          tenantId: bed.tenantId || `tenant_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
           tenantName: bed.tenantName,
           roomNumber: room.roomNumber,
           bedNumber: bed.bedNumber,
