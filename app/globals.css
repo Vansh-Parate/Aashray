@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #d4a574;
+  --primary-light: #e8c9a0;
+  --primary-dark: #b8865a;
+  --background: #fefdfb;
+  --surface: #f7f4f0;
+  --surface-dark: #e8e3dc;
+  --text-primary: #3e3530;
+  --text-secondary: #6b615b;
+  --text-muted: #9b918a;
+  --accent-success: #7a9b76;
+  --accent-warning: #d89b6a;
+  --accent-danger: #c77567;
+  --safety-high: #7a9b76;
+  --safety-medium: #d4a574;
+  --safety-low: #c77567;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-[var(--text-primary)] antialiased;
+  }
+}
