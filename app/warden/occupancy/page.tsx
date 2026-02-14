@@ -5,12 +5,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useListings } from "@/hooks/useListings";
 import { useOccupancy } from "@/hooks/useOccupancy";
 import { saveOccupancy } from "@/lib/storage/occupancy";
+import { supabase } from "@/lib/supabase/client";
 import { OccupancyGrid } from "@/components/warden/OccupancyGrid";
 
 export default function OccupancyPage() {
   const { user } = useAuth();
   const { listings: allListings } = useListings();
-  const listings = user?.role === "warden" ? allListings.filter((l) => l.warderId === user.id) : [];
+  const listings = (!supabase || user?.role !== "warden")
+    ? allListings
+    : allListings.filter((l) => l.warderId === user.id);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {

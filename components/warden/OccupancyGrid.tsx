@@ -62,13 +62,18 @@ export function OccupancyGrid({
       rooms: occupancy.rooms.map((room) =>
         room.roomNumber === selectedBed.roomNumber
           ? {
-              ...room,
-              beds: room.beds.map((b) =>
-                b.bedNumber === selectedBed.bed.bedNumber
-                  ? { ...b, status: dialogStatus, tenantName: dialogStatus !== "Empty" ? tenantName : undefined }
-                  : b
-              ),
-            }
+            ...room,
+            beds: room.beds.map((b) =>
+              b.bedNumber === selectedBed.bed.bedNumber
+                ? {
+                  ...b,
+                  status: dialogStatus,
+                  tenantName: dialogStatus !== "Empty" ? tenantName : undefined,
+                  tenantId: dialogStatus === "Occupied" ? (b.tenantId || `tenant_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`) : undefined,
+                }
+                : b
+            ),
+          }
           : room
       ),
       updatedAt: new Date().toISOString(),
