@@ -34,6 +34,8 @@ interface RentTrackerTableProps {
   selectedMonth: string;
   onMonthChange: (month: string) => void;
   onRefresh: () => void;
+  onMarkPaid?: () => void;
+  onGenerateRent?: () => void;
 }
 
 export function RentTrackerTable({
@@ -42,6 +44,8 @@ export function RentTrackerTable({
   selectedMonth,
   onMonthChange,
   onRefresh,
+  onMarkPaid,
+  onGenerateRent,
 }: RentTrackerTableProps) {
   const totalExpected = records.reduce((s, r) => s + r.amount, 0);
   const totalCollected = records.filter((r) => r.status === "Paid").reduce((s, r) => s + r.amount, 0);
@@ -54,6 +58,13 @@ export function RentTrackerTable({
     if (!occupancy) return;
     generateMonthlyRent(listingId, selectedMonth, listing.pricing.rent, occupancy);
     onRefresh();
+    onGenerateRent?.();
+  };
+
+  const handleMarkPaid = (recordId: string) => {
+    markRentAsPaid(recordId);
+    onRefresh();
+    onMarkPaid?.();
   };
 
   const months: string[] = [];
@@ -109,7 +120,7 @@ export function RentTrackerTable({
                   </TableCell>
                   <TableCell>
                     {r.status !== "Paid" && (
-                      <Button size="sm" variant="outline" onClick={() => { markRentAsPaid(r.id); onRefresh(); }}>Mark paid</Button>
+                      <Button size="sm" variant="outline" onClick={() => handleMarkPaid(r.id)}>Mark paid</Button>
                     )}
                   </TableCell>
                 </TableRow>

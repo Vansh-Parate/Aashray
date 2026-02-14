@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
 import { getSafetyLabel } from "@/lib/utils/safety-calculator";
@@ -12,7 +13,7 @@ interface ListingCardProps {
   onToggleSave?: () => void;
 }
 
-export function ListingCard(props: ListingCardProps) {
+export const ListingCard = React.memo(function ListingCard(props: ListingCardProps) {
   const { listing, isSaved, onToggleSave } = props;
   const safetyLabel = getSafetyLabel(listing.safetyScore);
   const firstImage = listing.images && listing.images[0];
@@ -83,4 +84,4 @@ export function ListingCard(props: ListingCardProps) {
       </div>
     </Link>
   );
-}
+});

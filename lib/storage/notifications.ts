@@ -1,11 +1,20 @@
+// ──────────────────────────────────────────────────────────────
+// DEPRECATED: localStorage notification helpers
+// Notifications are now powered by Supabase Realtime.
+// See: lib/supabase/notifications.ts
+// This file is kept only for reference / backward compatibility.
+// ──────────────────────────────────────────────────────────────
+
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getFromStorage, saveToStorage } from "@/lib/storage";
 import type { Notification } from "@/types";
 
+/** @deprecated Use lib/supabase/notifications.ts instead */
 export function getNotifications(): Notification[] {
   return getFromStorage<Notification[]>(STORAGE_KEYS.NOTIFICATIONS, []);
 }
 
+/** @deprecated Use lib/supabase/notifications.ts instead */
 export function getNotificationsByUserId(userId: string): Notification[] {
   return getNotifications()
     .filter((n) => n.userId === userId)
@@ -15,6 +24,7 @@ export function getNotificationsByUserId(userId: string): Notification[] {
     );
 }
 
+/** @deprecated Use lib/supabase/notifications.ts instead */
 export function markNotificationAsRead(id: string): void {
   const notifications = getNotifications();
   const n = notifications.find((x) => x.id === id);
@@ -24,6 +34,7 @@ export function markNotificationAsRead(id: string): void {
   }
 }
 
+/** @deprecated Use lib/supabase/notifications.ts instead */
 export function markAllNotificationsAsRead(userId: string): void {
   const notifications = getNotifications();
   notifications.forEach((n) => {
@@ -32,6 +43,7 @@ export function markAllNotificationsAsRead(userId: string): void {
   saveToStorage(STORAGE_KEYS.NOTIFICATIONS, notifications);
 }
 
+/** @deprecated Use the POST /api/notifications API route instead */
 export function addNotification(notification: Omit<Notification, "id">): void {
   const notifications = getNotifications();
   notifications.push({

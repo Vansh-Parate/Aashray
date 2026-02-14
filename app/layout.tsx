@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ListingProvider } from "@/contexts/ListingContext";
 import { NotificationProviderWrapper } from "@/components/providers/NotificationProviderWrapper";
 import { NavbarWithMain } from "@/components/layout/NavbarWithMain";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
           <ListingProvider>
             <NotificationProviderWrapper>
               <NavbarWithMain>{children}</NavbarWithMain>
+            <Toaster position="top-center" richColors closeButton />
             </NotificationProviderWrapper>
           </ListingProvider>
         </AuthProvider>

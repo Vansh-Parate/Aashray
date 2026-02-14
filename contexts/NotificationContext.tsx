@@ -5,13 +5,15 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
   getNotificationsByUserId,
-  markNotificationAsRead,
-  markAllNotificationsAsRead,
-} from "@/lib/storage/notifications";
+  markNotificationAsRead as supaMarkAsRead,
+  markAllNotificationsAsRead as supaMarkAllAsRead,
+  subscribeToNotifications,
+} from "@/lib/supabase/notifications";
 import type { Notification } from "@/types";
 
 interface NotificationContextType {
@@ -32,31 +34,58 @@ export function NotificationProvider({
   userId: string | null;
 }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const unsubRef = useRef<(() => void) | null>(null);
 
-  const refresh = useCallback(() => {
+  // Fetch existing notifications from Supabase
+  const refresh = useCallback(async () => {
     if (!userId) {
       setNotifications([]);
       return;
     }
-    setNotifications(getNotificationsByUserId(userId));
+    const data = await getNotificationsByUserId(userId);
+    setNotifications(data);
   }, [userId]);
 
+  // Initial fetch + realtime subscription
   useEffect(() => {
+    if (!userId) {
+      setNotifications([]);
+      return;
+    }
+
+    // Fetch existing notifications
     refresh();
-  }, [refresh]);
+
+    // Subscribe to real-time INSERT events
+    unsubRef.current = subscribeToNotifications(userId, (newNotif) => {
+      setNotifications((prev) => [newNotif, ...prev]);
+    });
+
+    return () => {
+      unsubRef.current?.();
+      unsubRef.current = null;
+    };
+  }, [userId, refresh]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAsRead = useCallback((id: string) => {
-    markNotificationAsRead(id);
-    refresh();
-  }, [refresh]);
+  const markAsRead = useCallback(
+    async (id: string) => {
+      // Optimistic update
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+      );
+      await supaMarkAsRead(id);
+    },
+    []
+  );
 
-  const markAllAsRead = useCallback(() => {
+  const markAllAsRead = useCallback(async () => {
     if (!userId) return;
-    markAllNotificationsAsRead(userId);
-    refresh();
-  }, [userId, refresh]);
+    // Optimistic update
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    await supaMarkAllAsRead(userId);
+  }, [userId]);
 
   return (
     <NotificationContext.Provider

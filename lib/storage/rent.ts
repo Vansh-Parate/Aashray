@@ -1,10 +1,27 @@
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
 import { getFromStorage, saveToStorage } from "@/lib/storage";
-import { addNotification } from "@/lib/storage/notifications";
 import type { OccupancyGrid, RentRecord } from "@/types";
 
 function generateId(): string {
   return `rent_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+}
+
+/** Send a notification via the server API (triggers Supabase Realtime) */
+async function sendNotification(params: {
+  userId: string;
+  type: string;
+  title: string;
+  message: string;
+}): Promise<void> {
+  try {
+    await fetch("/api/notifications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+  } catch (err) {
+    console.error("Failed to send notification:", err);
+  }
 }
 
 export function getRentRecords(): RentRecord[] {
@@ -31,13 +48,12 @@ export function markRentAsPaid(recordId: string): void {
 
     saveToStorage(STORAGE_KEYS.RENT_RECORDS, records);
 
-    addNotification({
+    // Fire-and-forget: sends notification via API → Supabase Realtime
+    sendNotification({
       userId: records[recordIndex].tenantId,
       type: "rent_paid",
       title: "Rent Payment Confirmed",
       message: `Your rent payment of ₹${records[recordIndex].amount} for ${records[recordIndex].month} has been confirmed.`,
-      read: false,
-      createdAt: new Date().toISOString(),
     });
   }
 }

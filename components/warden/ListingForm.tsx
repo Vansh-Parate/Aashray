@@ -30,6 +30,44 @@ const defaultAmenities: Listing["amenities"] = {
   gym: false,
 };
 
+function Step3Amenities({
+  formData,
+  update,
+}: {
+  formData: Partial<Listing>;
+  update: (field: string, value: unknown) => void;
+}) {
+  const amenities = formData.amenities ?? defaultAmenities;
+  const liveScore = useMemo(() => calculateSafetyScore(amenities), [amenities]);
+  const safetyLabel = getSafetyLabel(liveScore);
+
+  return (
+    <motion.div
+      key="s3"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-4"
+    >
+      <h4 className="font-semibold">Safety & facilities</h4>
+      <div className="rounded-xl border border-surface-dark bg-surface/60 px-4 py-3 flex items-center justify-between">
+        <span className="text-sm text-text-muted">Live safety score</span>
+        <span className="font-semibold text-text-primary">
+          {liveScore} — {safetyLabel}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {(["cctv", "securityGuard", "biometrics", "wifi", "meals", "laundry", "parking", "gym"] as const).map((k) => (
+          <label key={k} className="flex items-center gap-2">
+            <Checkbox checked={!!formData.amenities?.[k]} onCheckedChange={(c) => update("amenities." + k, !!c)} />
+            <span className="text-sm">{k === "securityGuard" ? "Security guard" : k}</span>
+          </label>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 interface ListingFormProps {
   wardenId: string;
   onSuccess: () => void;
@@ -125,17 +163,7 @@ export function ListingForm({ wardenId, onSuccess }: ListingFormProps) {
             </motion.div>
           )}
           {step === 3 && (
-            <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-              <h4 className="font-semibold">Safety & facilities</h4>
-              <div className="grid grid-cols-2 gap-4">
-                {(["cctv", "securityGuard", "biometrics", "wifi", "meals", "laundry", "parking", "gym"] as const).map((k) => (
-                  <label key={k} className="flex items-center gap-2">
-                    <Checkbox checked={!!formData.amenities?.[k]} onCheckedChange={(c) => update("amenities." + k, !!c)} />
-                    <span className="text-sm">{k === "securityGuard" ? "Security guard" : k}</span>
-                  </label>
-                ))}
-              </div>
-            </motion.div>
+            <Step3Amenities formData={formData} update={update} />
           )}
           {step === 4 && (
             <motion.div key="s4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
