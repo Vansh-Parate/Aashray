@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useListingContext } from "@/contexts/ListingContext";
 import { ListingForm } from "@/components/warden/ListingForm";
@@ -20,6 +21,7 @@ export default function AddListingPage() {
 
   const onSuccess = () => {
     refresh();
+    toast.success("Listing created", { description: "It’s live on Discover and your dashboard." });
     router.push("/warden/dashboard");
   };
 

@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { motion, useMotionValue, useTransform, PanInfo, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { DiscoveryRoommateCard } from "@/components/student/DiscoveryRoommateCard";
 import type { RoommateProfile } from "@/types";
+import { X, Check, Clock } from "lucide-react";
 
 interface RoommateSwiperProps {
   profiles: RoommateProfile[];
@@ -16,9 +16,6 @@ interface RoommateSwiperProps {
 
 const SWIPE_THRESHOLD = 80;
 const DRAG_VELOCITY_THRESHOLD = 500;
-
-const NEW_MATCHES_TODAY = 5;
-const PROFILE_VIEWS = 23;
 
 export function RoommateSwiper({
   profiles,
@@ -43,33 +40,37 @@ export function RoommateSwiper({
       if (dir === "right") onLike?.(current);
       else onSkip?.(current);
       setExitDirection(dir);
-      requestAnimationFrame(() => {
-        setCurrentIndex((i) => Math.min(i + 1, profiles.length));
-      });
+      const nextIndex = Math.min(currentIndex + 1, profiles.length);
+      const nextProfile = profiles[nextIndex] ?? null;
+      onCurrentChange?.(nextProfile);
+      requestAnimationFrame(() => setCurrentIndex(nextIndex));
     },
-    [current, onLike, onSkip, profiles.length]
+    [current, currentIndex, onLike, onSkip, onCurrentChange, profiles]
   );
 
   const handleMaybeLater = useCallback(() => {
     if (!current) return;
     onMaybeLater?.(current);
     setExitDirection(null);
-    setCurrentIndex((i) => Math.min(i + 1, profiles.length));
-  }, [current, onMaybeLater]);
+    const nextIndex = Math.min(currentIndex + 1, profiles.length);
+    onCurrentChange?.(profiles[nextIndex] ?? null);
+    setCurrentIndex(nextIndex);
+  }, [current, currentIndex, onMaybeLater, onCurrentChange, profiles]);
 
   if (profiles.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <p className="text-text-muted text-lg">No more profiles to show.</p>
-        <p className="text-text-muted text-sm mt-2">Check back later for new matches.</p>
+      <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed border-surface-dark bg-surface/50 py-24 text-center">
+        <p className="font-medium text-text-secondary">No more profiles to show.</p>
+        <p className="mt-1 text-sm text-text-muted">Check back later for new matches.</p>
       </div>
     );
   }
 
   if (!current) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <p className="text-text-muted text-lg">You have seen all profiles.</p>
+      <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed border-surface-dark bg-surface/50 py-24 text-center px-6">
+        <p className="font-medium text-text-secondary">You&apos;ve seen all profiles.</p>
+        <p className="mt-2 text-sm text-text-muted">Update your preferences to get better matches, or check back later.</p>
       </div>
     );
   }
@@ -77,58 +78,45 @@ export function RoommateSwiper({
   const progressPct = profiles.length ? ((currentIndex + 1) / profiles.length) * 100 : 0;
 
   return (
-    <div className="relative w-full h-full min-h-0 flex flex-col">
-      {/* Stats banner - compact single line, 8-10px vertical */}
-      <div className="mb-2 flex items-center justify-center gap-3 rounded-2xl border border-surface-dark bg-surface/80 px-3 py-2 text-[13px] text-text-muted shrink-0">
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden>✨</span>
-          New matches today: <span className="font-medium text-text-primary">{NEW_MATCHES_TODAY}</span>
+    <div className="flex flex-1 flex-col">
+      {/* Progress */}
+      <div className="mb-5 flex items-center gap-3">
+        <span className="text-sm text-text-muted tabular-nums">
+          <span className="font-semibold text-text-primary">{currentIndex + 1}</span>
+          <span className="text-text-muted"> / {profiles.length}</span>
         </span>
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden>👁</span>
-          Profile views: <span className="font-medium text-text-primary">{PROFILE_VIEWS}</span>
-        </span>
-      </div>
-
-      {/* Progress - 8-10px below stats; 24-32px above card */}
-      <div className="mb-6 shrink-0">
-        <p className="text-center text-[13px] text-text-muted">
-          Viewing <span className="font-medium text-text-primary">{currentIndex + 1}</span> of{" "}
-          <span className="font-medium text-text-primary">{profiles.length}</span> matches
-        </p>
-        <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-surface-dark">
+        <div className="flex-1 h-2 overflow-hidden rounded-full bg-surface-dark">
           <motion.div
             className="h-full rounded-full bg-primary"
             initial={false}
             animate={{ width: `${progressPct}%` }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           />
         </div>
       </div>
 
-      {/* Card stack + main card - flex-1 to fill viewport */}
-      <div className="relative flex-1 min-h-[200px] w-full max-w-[420px] mx-auto flex items-center justify-center">
+      {/* Card stack */}
+      <div className="relative flex-1 min-h-[380px] max-w-[400px] mx-auto w-full">
         {nextTwo.map((profile, i) => (
           <motion.div
             key={profile.id}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            className="absolute inset-x-0 top-0 flex justify-center pointer-events-none"
             initial={false}
             animate={{
-              scale: 1 - (i + 1) * 0.05,
-              y: (i + 1) * 10,
-              opacity: 0.92 - i * 0.08,
+              scale: 1 - (i + 1) * 0.04,
+              y: (i + 1) * 8,
+              opacity: 0.9 - i * 0.1,
             }}
             transition={{ duration: 0.2 }}
             style={{ zIndex: 2 - i }}
           >
-            <div className="w-full h-full max-h-[320px] px-2 flex items-center justify-center">
-              <div className="rounded-3xl overflow-hidden shadow-soft w-full max-w-[380px] aspect-[4/5] max-h-[320px]">
-                <DiscoveryRoommateCard profile={profile} anonymous className="w-full h-full" />
-              </div>
+            <div className="w-full max-w-[340px]">
+              <DiscoveryRoommateCard profile={profile} anonymous className="w-full" />
             </div>
           </motion.div>
         ))}
-        <div className="relative z-10 w-full h-full flex items-center justify-center min-h-[280px]">
+
+        <div className="relative z-10 flex justify-center min-h-[380px]">
           <AnimatePresence mode="wait" initial={false}>
             <SwipeableCard
               key={current.id}
@@ -140,35 +128,32 @@ export function RoommateSwiper({
         </div>
       </div>
 
-      {/* Action buttons - 24-32px below card; page has 20-24px bottom padding */}
-      <div className="mt-6 flex items-center justify-center gap-2 shrink-0">
-        <Button
-          variant="outline"
-          size="lg"
-          className="rounded-2xl min-w-[80px] min-h-[40px] py-2 px-4 text-sm"
+      {/* Actions */}
+      <div className="mt-6 flex items-center justify-center gap-3">
+        <button
+          type="button"
           onClick={() => handleSwipe("left")}
           aria-label="Skip"
+          className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-surface-dark bg-background text-text-secondary shadow-soft transition-all hover:border-accent-danger/40 hover:bg-accent-danger/5 hover:text-accent-danger active:scale-95"
         >
-          <span className="mr-1" aria-hidden>✕</span>
-          Skip
-        </Button>
-        <Button
-          variant="secondary"
-          size="lg"
-          className="rounded-2xl min-w-[88px] min-h-[40px] py-2 px-4 text-sm bg-surface-dark text-text-secondary hover:bg-surface-dark/90"
+          <X className="h-6 w-6" />
+        </button>
+        <button
+          type="button"
           onClick={handleMaybeLater}
+          aria-label="Maybe later"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-dark text-text-secondary transition-all hover:bg-primary/15 hover:text-primary active:scale-95"
         >
-          Maybe Later
-        </Button>
-        <Button
-          size="lg"
-          className="rounded-2xl min-w-[80px] min-h-[40px] py-2 px-4 text-sm shadow-soft"
+          <Clock className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
           onClick={() => handleSwipe("right")}
           aria-label="Connect"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-soft transition-all hover:bg-primary-dark active:scale-95"
         >
-          <span className="mr-1" aria-hidden>✓</span>
-          Connect
-        </Button>
+          <Check className="h-6 w-6" strokeWidth={3} />
+        </button>
       </div>
     </div>
   );
@@ -183,9 +168,9 @@ interface SwipeableCardProps {
 function SwipeableCard({ profile, onSwipe, exitDirection }: SwipeableCardProps) {
   const x = useMotionValue(0);
   const scale = useTransform(x, [-200, -50, 0, 50, 200], [0.96, 0.98, 1, 0.98, 0.96]);
-  const rotate = useTransform(x, [-200, 200], [-4, 4]);
-  const overlayGreen = useTransform(x, [0, 150], [0, 0.15]);
-  const overlayRed = useTransform(x, [-150, 0], [0.15, 0]);
+  const rotate = useTransform(x, [-200, 200], [-6, 6]);
+  const overlayConnect = useTransform(x, [0, 120], [0, 0.18]);
+  const overlaySkip = useTransform(x, [-120, 0], [0.18, 0]);
 
   const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const offset = info.offset.x;
@@ -197,7 +182,7 @@ function SwipeableCard({ profile, onSwipe, exitDirection }: SwipeableCardProps) 
 
   return (
     <motion.div
-      className="absolute inset-0 flex items-center justify-center touch-none"
+      className="absolute inset-x-0 top-0 flex justify-center touch-none"
       style={{ x, scale, rotate }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
@@ -208,48 +193,45 @@ function SwipeableCard({ profile, onSwipe, exitDirection }: SwipeableCardProps) 
       exit={{
         x: exitDirection === "right" ? 400 : -400,
         opacity: 0,
-        transition: { duration: 0.22, ease: "easeOut" },
+        transition: { duration: 0.25, ease: "easeOut" },
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ type: "spring", stiffness: 280, damping: 28 }}
     >
-      <motion.div
-        className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden"
-        style={{ opacity: overlayGreen }}
-      >
-        <div className="absolute inset-0 bg-accent-success/30" />
-      </motion.div>
-      <motion.div
-        className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden"
-        style={{ opacity: overlayRed }}
-      >
-        <div className="absolute inset-0 bg-accent-danger/25" />
-      </motion.div>
+      <div className="relative w-full max-w-[340px]">
+        <motion.div
+          className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden"
+          style={{ opacity: overlayConnect }}
+        >
+          <div className="absolute inset-0 bg-accent-success/25 rounded-2xl" />
+        </motion.div>
+        <motion.div
+          className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden"
+          style={{ opacity: overlaySkip }}
+        >
+          <div className="absolute inset-0 bg-accent-danger/20 rounded-2xl" />
+        </motion.div>
 
-      {/* Floating thumb indicators */}
-      <motion.span
-        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 z-20 text-4xl opacity-0"
-        style={{ opacity: useTransform(x, (v) => (v < -40 ? 0.85 : 0)) }}
-        aria-hidden
-      >
-        👎
-      </motion.span>
-      <motion.span
-        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 z-20 text-4xl opacity-0"
-        style={{ opacity: useTransform(x, (v) => (v > 40 ? 0.85 : 0)) }}
-        aria-hidden
-      >
-        👍
-      </motion.span>
+        <motion.span
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 z-20"
+          style={{ opacity: useTransform(x, (v) => (v < -50 ? 0.9 : 0)) }}
+          aria-hidden
+        >
+          <span className="text-3xl font-medium text-accent-danger">Skip</span>
+        </motion.span>
+        <motion.span
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 z-20"
+          style={{ opacity: useTransform(x, (v) => (v > 50 ? 0.9 : 0)) }}
+          aria-hidden
+        >
+          <span className="text-3xl font-medium text-accent-success">Connect</span>
+        </motion.span>
 
-      <div className="w-full h-full max-h-[340px] flex items-center justify-center px-2">
-        <div className="w-full max-w-[380px] max-h-[340px] overflow-hidden flex items-center justify-center rounded-3xl transition-transform duration-200 hover:rotate-[3deg] origin-center">
-          <DiscoveryRoommateCard
-            profile={profile}
-            anonymous
-            className="w-full max-w-[380px] h-full"
-            isInteractive
-          />
-        </div>
+        <DiscoveryRoommateCard
+          profile={profile}
+          anonymous
+          className="w-full"
+          isInteractive
+        />
       </div>
     </motion.div>
   );
