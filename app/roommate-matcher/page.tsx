@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getRoommateProfiles } from "@/lib/storage/roommates";
+import { useAuth } from "@/contexts/AuthContext";
+import { getRoommateProfiles, getRoommateProfileByUserId, saveRoommateProfile } from "@/lib/storage/roommates";
 import { saveToStorage } from "@/lib/storage";
 import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
-import { generateMockRoommateProfiles } from "@/lib/constants/mock-data";
+import { generateMockRoommateProfiles, generateDemoRoommateProfileForUser } from "@/lib/constants/mock-data";
 import { RoommateSwiper } from "@/components/student/RoommateSwiper";
 import { CompatibilityBreakdownSidebar } from "@/components/student/CompatibilityBreakdownSidebar";
 import type { RoommateProfile } from "@/types";
@@ -35,22 +36,29 @@ function enrichProfile(p: RoommateProfile, baseScore: number): RoommateProfile {
 }
 
 export default function RoommateMatcherPage() {
+  const { user } = useAuth();
   const [profiles, setProfiles] = useState<RoommateProfile[]>([]);
   const [currentProfile, setCurrentProfile] = useState<RoommateProfile | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     let list = getRoommateProfiles();
-    if (list.length === 0 && typeof window !== "undefined") {
+    if (list.length === 0) {
       const mock = generateMockRoommateProfiles(20);
       saveToStorage(STORAGE_KEYS.ROOMMATE_PROFILES, mock);
       list = mock;
+    }
+    if (user?.id && !list.some((p) => p.userId === user.id)) {
+      const demo = generateDemoRoommateProfileForUser(user.id, user.displayName);
+      saveRoommateProfile(demo);
+      list = getRoommateProfiles();
     }
     const withScores = list.map((p) => {
       const baseScore = 50 + Math.floor(Math.random() * 50);
       return enrichProfile(p, baseScore);
     });
     setProfiles(withScores);
-  }, []);
+  }, [user?.id, user?.displayName]);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] gradient-mesh">

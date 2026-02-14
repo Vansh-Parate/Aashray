@@ -1,10 +1,10 @@
 import { calculateSafetyScore } from "@/lib/utils/safety-calculator";
 import type { Listing, RoommateProfile } from "@/types";
 
+/** Demo listing images (houses) – used for Discover and Warden listings */
 const PLACEHOLDER_IMAGES = [
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
-  "https://images.unsplash.com/photo-1588012886079-baef0ac45fbd?w=600&auto=format&fit=crop&q=60",
-  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1588012886079-baef0ac45fbd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGhvdXNlc3xlbnwwfHwwfHx8MA%3D%3D",
+  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8fDA%3D",
   "https://images.pexels.com/photos/19130094/pexels-photo-19130094.jpeg",
 ];
 
@@ -38,6 +38,28 @@ export function generateMockListings(wardenId: string, count = 12): Listing[] {
     "Youth Hostel",
     "Smart Stay PG",
     "University Heights",
+    "Lakeside Residency",
+    "Metro View PG",
+    "Scholar's Den",
+  ];
+  const descriptions = [
+    "Safe and comfortable student accommodation near universities. CCTV surveillance. High-speed WiFi. Ideal for students and working professionals.",
+    "Well-maintained PG with 24/7 security, power backup, and housekeeping. Walking distance to metro and bus stops.",
+    "Spacious rooms with attached bathrooms. Common area with TV, study room, and indoor games. Vegetarian meals available.",
+    "Peaceful locality with grocery and pharmacies nearby. Biometric entry, dedicated parking, and laundry facility.",
+    "Girls-only hostel with strict security. Nutritious meals, gym access, and regular cleaning. Near college area.",
+    "Boys PG with single and double sharing options. WiFi in all rooms, library, and 24/7 water supply.",
+    "Co-ed accommodation with separate floors. CCTV, fire safety, and visitor policy. Monthly maintenance included.",
+    "Premium PG with AC rooms on request. Cafeteria, medical aid on call, and monthly parent meetings.",
+  ];
+  const rulesPool = [
+    "No smoking or alcohol on premises",
+    "No loud music after 10 PM",
+    "Visitors allowed till 9 PM with ID",
+    "Keep common areas and washrooms clean",
+    "No overnight guests without prior notice",
+    "Switch off lights and AC when not in room",
+    "Monthly rent due by 5th of every month",
   ];
   return Array.from({ length: count }, (_, i) => {
     const amenities = {
@@ -53,15 +75,16 @@ export function generateMockListings(wardenId: string, count = 12): Listing[] {
     const total = 10 + (i % 5) * 8;
     const occupied = Math.floor(total * (0.3 + (i % 7) * 0.1));
     const area = areas[i % areas.length];
+    const coord = coords[i % coords.length];
     const listing: Listing = {
       id: `listing_${i + 1}`,
       warderId: wardenId,
-      title: titles[i % titles.length] + (i > 11 ? ` ${i}` : ""),
+      title: titles[i % titles.length] + (i >= titles.length ? ` ${i + 1}` : ""),
       type: types[i % 3],
       location: {
-        address: `${100 + i} ${area}, Andheri`,
+        address: `${100 + (i % 90)} ${area}, Andheri (W), Mumbai - 400058`,
         city: "Mumbai",
-        coordinates: coords[i % coords.length],
+        coordinates: coord,
       },
       pricing: {
         rent: 6000 + (i % 10) * 1500,
@@ -70,16 +93,11 @@ export function generateMockListings(wardenId: string, count = 12): Listing[] {
       },
       amenities,
       safetyScore: calculateSafetyScore(amenities),
-      images: [PLACEHOLDER_IMAGES[i % PLACEHOLDER_IMAGES.length]],
+      images: [...PLACEHOLDER_IMAGES],
       occupancy: { total, occupied, available: total - occupied },
       gender: (["Male", "Female", "Co-ed"] as const)[i % 3],
-      rules: [
-        "No smoking",
-        "No loud music after 10 PM",
-        "Visitors allowed till 9 PM",
-        "Keep common areas clean",
-      ],
-      description: `Safe and comfortable student accommodation near universities. ${amenities.cctv ? "CCTV surveillance." : ""} ${amenities.wifi ? "High-speed WiFi." : ""} Ideal for students.`,
+      rules: rulesPool.slice(0, 4 + (i % 3)),
+      description: descriptions[i % descriptions.length] + ` Located in ${area}. ${total} beds, ${total - occupied} available. Contact for site visit.`,
       createdAt: new Date(Date.now() - (i + 1) * 86400000).toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -144,4 +162,35 @@ export function generateMockRoommateProfiles(count = 20): RoommateProfile[] {
     },
     createdAt: new Date(Date.now() - (i + 1) * 86400000).toISOString(),
   }));
+}
+
+/** Demo "Your profile" for roommate matcher – one profile per user when they have none */
+export function generateDemoRoommateProfileForUser(
+  userId: string,
+  displayName?: string
+): RoommateProfile {
+  const name = displayName?.trim() || "Demo Student";
+  return {
+    id: `roommate_demo_${userId}`,
+    userId,
+    name,
+    age: 21,
+    course: "Computer Science",
+    university: "Pune University",
+    habits: {
+      sleepSchedule: "Flexible",
+      cleanliness: "Moderately Clean",
+      socialPreference: "Balanced",
+      studyStyle: "Room Studier",
+      lifestyle: "Occasional",
+    },
+    interests: ["Reading", "Coding", "Music", "Travel"],
+    bio: "Looking for a peaceful place to study and stay. Clean and respectful. Open to like-minded roommates.",
+    lookingFor: {
+      genderPreference: "Same Gender",
+      budgetRange: { min: 6000, max: 12000 },
+      preferredLocations: ["Mumbai", "Pune"],
+    },
+    createdAt: new Date().toISOString(),
+  };
 }

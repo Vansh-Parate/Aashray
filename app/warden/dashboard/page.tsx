@@ -4,8 +4,12 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useListings } from "@/hooks/useListings";
+import { generateMockListings } from "@/lib/constants/mock-data";
+import { STORAGE_KEYS } from "@/lib/constants/storage-keys";
+import { getListingsByWardenId } from "@/lib/storage/listings";
 import { getRentRecords } from "@/lib/storage/rent";
 import { getOccupancyData } from "@/lib/storage/occupancy";
+import { saveToStorage } from "@/lib/storage";
 import { supabase } from "@/lib/supabase/client";
 import {
   Building2,
@@ -28,28 +32,28 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function WardenDashboardPage() {
   const { user } = useAuth();
-  const { listings: allListings } = useListings();
+  const { listings: allListings, refresh } = useListings();
   const listings = (!supabase || user?.role !== "warden")
     ? allListings
     : allListings.filter((l) => l.warderId === user.id);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const cleaned = localStorage.getItem("full_cleanup_v1");
-    if (!cleaned) {
-      localStorage.removeItem("aashray_listings");
-      localStorage.removeItem("aashray_rent_records");
-      localStorage.removeItem("aashray_occupancy");
-      localStorage.removeItem("aashray_bookings");
-      localStorage.removeItem("aashray_notifications");
-      localStorage.removeItem("rent_demo_seeded");
-      localStorage.removeItem("rent_cleanup_v1");
-      localStorage.removeItem("mock_data_version");
-      localStorage.setItem("full_cleanup_v1", "done");
-      window.location.reload();
-    }
     setMounted(true);
   }, []);
+
+  // Seed demo listings for warden when they have none (localStorage used when API empty)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const warden = user?.role === "warden" ? user : null;
+    if (!warden?.id) return;
+    const myListings = getListingsByWardenId(warden.id);
+    if (myListings.length === 0) {
+      const mock = generateMockListings(warden.id, 15);
+      saveToStorage(STORAGE_KEYS.LISTINGS, mock);
+      refresh();
+    }
+  }, [user?.id, user?.role, refresh]);
 
   const totalBeds = listings.reduce((s, l) => s + l.occupancy.total, 0);
   const occupiedBeds = listings.reduce((s, l) => s + l.occupancy.occupied, 0);

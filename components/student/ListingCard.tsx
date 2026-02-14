@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
 import { getSafetyLabel } from "@/lib/utils/safety-calculator";
@@ -16,19 +16,49 @@ interface ListingCardProps {
 export const ListingCard = React.memo(function ListingCard(props: ListingCardProps) {
   const { listing, isSaved, onToggleSave } = props;
   const safetyLabel = getSafetyLabel(listing.safetyScore);
-  const firstImage = listing.images && listing.images[0];
+  const images = listing.images?.length ? listing.images : [];
+  const [imgIndex, setImgIndex] = useState(0);
+  const currentImage = images[imgIndex];
   const safetyDisplay = (listing.safetyScore / 20).toFixed(1);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const t = setInterval(() => setImgIndex((i) => (i + 1) % images.length), 4000);
+    return () => clearInterval(t);
+  }, [images.length]);
 
   return (
     <Link href={`/listing/${listing.id}`} className="group cursor-pointer block">
-      {/* Image */}
+      {/* Image carousel */}
       <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-dark mb-3">
-        {firstImage ? (
-          <img
-            src={firstImage}
-            alt={listing.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+        {currentImage ? (
+          <>
+            <img
+              src={currentImage}
+              alt={listing.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            {images.length > 1 && (
+              <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setImgIndex(i);
+                    }}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all",
+                      i === imgIndex ? "w-5 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"
+                    )}
+                    aria-label={`Image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-text-muted">
             No image
