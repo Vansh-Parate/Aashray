@@ -96,3 +96,72 @@ export function generateMonthlyRent(
   saveToStorage(STORAGE_KEYS.RENT_RECORDS, all);
   return records;
 }
+
+/**
+ * Add a rent record for a single tenant when they are assigned a bed.
+ * Skips if a record already exists for that listing + room + bed + month.
+ */
+export function addRentForSingleTenant(params: {
+  listingId: string;
+  tenantId: string;
+  tenantName: string;
+  roomNumber: string;
+  bedNumber: string;
+  rentAmount: number;
+}): RentRecord | null {
+  const month = new Date().toISOString().slice(0, 7); // current month
+  const existing = getRentRecords();
+
+  // Check if a record already exists for this bed this month
+  const alreadyExists = existing.some(
+    (r) =>
+      r.listingId === params.listingId &&
+      r.roomNumber === params.roomNumber &&
+      r.bedNumber === params.bedNumber &&
+      r.month === month
+  );
+  if (alreadyExists) return null;
+
+  const dueDate = new Date(month + "-05");
+  const record: RentRecord = {
+    id: generateId(),
+    listingId: params.listingId,
+    tenantId: params.tenantId,
+    tenantName: params.tenantName,
+    roomNumber: params.roomNumber,
+    bedNumber: params.bedNumber,
+    amount: params.rentAmount,
+    dueDate: dueDate.toISOString().split("T")[0],
+    status: "Pending",
+    month,
+    notificationSent: false,
+  };
+
+  existing.push(record);
+  saveToStorage(STORAGE_KEYS.RENT_RECORDS, existing);
+  return record;
+}
+
+/**
+ * Remove all unpaid (Pending / Overdue) rent records for a specific bed
+ * when a tenant is removed. Paid records are kept as historical data.
+ */
+export function removeRentForTenant(params: {
+  listingId: string;
+  roomNumber: string;
+  bedNumber: string;
+}): number {
+  const all = getRentRecords();
+  const before = all.length;
+  const filtered = all.filter(
+    (r) =>
+      !(
+        r.listingId === params.listingId &&
+        r.roomNumber === params.roomNumber &&
+        r.bedNumber === params.bedNumber &&
+        r.status !== "Paid" // keep paid records as history
+      )
+  );
+  saveToStorage(STORAGE_KEYS.RENT_RECORDS, filtered);
+  return before - filtered.length;
+}
