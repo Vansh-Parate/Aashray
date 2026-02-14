@@ -39,7 +39,13 @@ export function ListingCard(props: ListingCardProps) {
         </div>
       </div>
       <div className="p-6">
-        <h3 className="font-semibold text-lg text-text-primary line-clamp-1">{listing.title}</h3>
+        <div
+          className="inline-flex items-center rounded-xl border border-primary/40 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary transition-shadow hover:border-primary/60 hover:shadow-soft"
+          title="Listing verified by AASHRAY"
+        >
+          Safety Verified by AASHRAY
+        </div>
+        <h3 className="font-semibold text-lg text-text-primary line-clamp-1 mt-3">{listing.title}</h3>
         <div className="flex items-center gap-1 mt-2 text-text-muted text-sm">
           <MapPin className="h-4 w-4 shrink-0" />
           <span>{listing.location.city}</span>

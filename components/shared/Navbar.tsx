@@ -80,6 +80,14 @@ export function Navbar() {
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
+                    {user.role === "student" && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/roommate-matcher/profile">
+                          <User className="mr-2 h-4 w-4" />
+                          Your Profile
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => signOut()}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign out
@@ -123,6 +131,19 @@ export function Navbar() {
                         {link.label}
                       </Link>
                     ))}
+                    {user.role === "student" && (
+                      <Link
+                        href="/roommate-matcher/profile"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "text-lg font-medium py-2 flex items-center gap-2",
+                          pathname === "/roommate-matcher/profile" ? "text-primary" : "text-text-primary"
+                        )}
+                      >
+                        <User className="h-5 w-5" />
+                        Your Profile
+                      </Link>
+                    )}
                     <NotificationBadge />
                     <Button variant="outline" onClick={() => { signOut(); setOpen(false); }}>
                       Sign out

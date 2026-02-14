@@ -10,6 +10,10 @@ export function getRoommateProfileById(id: string): RoommateProfile | undefined 
   return getRoommateProfiles().find((p) => p.id === id);
 }
 
+export function getRoommateProfileByUserId(userId: string): RoommateProfile | undefined {
+  return getRoommateProfiles().find((p) => p.userId === userId);
+}
+
 export function getRoommateProfilesExcludingUserId(
   userId: string
 ): RoommateProfile[] {

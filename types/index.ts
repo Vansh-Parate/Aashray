@@ -61,6 +61,12 @@ export interface RoommateProfile {
     preferredLocations: string[];
   };
   matchScore?: number;
+  /** Optional compatibility breakdown for UI (derived or from backend) */
+  matchBreakdown?: { lifestyle: number; budget: number; cleanliness: number; schedule: number };
+  matchReasons?: string[];
+  preferredMoveIn?: string;
+  leaseMonths?: number;
+  responseRate?: "High" | "Medium" | "Low";
   createdAt: string;
 }
 
