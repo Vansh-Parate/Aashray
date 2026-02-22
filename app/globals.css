@@ -40,8 +40,13 @@
 }
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-background text-text antialiased overflow-x-hidden;
+    /* Responsive: prevent horizontal overflow and improve touch targets */
+    min-width: 0;
   }
 }
 

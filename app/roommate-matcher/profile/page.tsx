@@ -30,8 +30,8 @@ export default function RoommateProfilePage() {
   }, [user?.id, user?.displayName]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-sm mx-auto">
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-sm mx-auto w-full">
         <div className="mb-6">
           <Button variant="ghost" size="sm" asChild className="text-text-muted -ml-2">
             <Link href="/roommate-matcher">← Back to Roommate Matcher</Link>

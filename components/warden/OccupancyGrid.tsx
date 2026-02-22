@@ -120,7 +120,7 @@ export function OccupancyGrid({
         <div>
           <Label className="mb-2 block">Select listing</Label>
           <Select value={selectedListingId || ""} onValueChange={onSelectListing}>
-            <SelectTrigger className="max-w-sm">
+            <SelectTrigger className="w-full max-w-sm">
               <SelectValue placeholder="Choose a listing" />
             </SelectTrigger>
             <SelectContent>

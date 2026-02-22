@@ -112,7 +112,7 @@ export default function WardenDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/50">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-7xl">
 
         {/* Hero Header */}
         <div className="relative overflow-hidden rounded-2xl bg-surface border border-surface-dark/50 p-6 md:p-8 mb-8">

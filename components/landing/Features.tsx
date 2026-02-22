@@ -47,11 +47,11 @@ function Reveal({
 
 export function Features() {
   return (
-    <section id="features" className="py-32 bg-surface/30">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="features" className="py-16 sm:py-24 lg:py-32 bg-surface/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <Reveal>
-          <div className="text-center mb-32">
-            <h2 className="font-accent text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-text mb-6">
+          <div className="text-center mb-12 sm:mb-20 lg:mb-32">
+            <h2 className="font-accent text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-text mb-6">
               Everything you need
               <br />
               in one place

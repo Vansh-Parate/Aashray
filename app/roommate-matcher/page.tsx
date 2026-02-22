@@ -62,7 +62,7 @@ export default function RoommateMatcherPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] gradient-mesh">
-      <div className="container mx-auto px-4 py-6 lg:py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 lg:py-8">
         {/* Page header */}
         <header className="mb-6 lg:mb-8">
           <div className="flex items-center gap-3">
@@ -78,7 +78,7 @@ export default function RoommateMatcherPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 lg:gap-10">
           {/* Swipe area */}
-          <main className="flex flex-col min-h-[520px] lg:min-h-[600px]">
+          <main className="flex flex-col min-h-[420px] sm:min-h-[520px] lg:min-h-[600px]">
             <RoommateSwiper
               profiles={profiles}
               onLike={(p) => {

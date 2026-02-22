@@ -349,7 +349,7 @@ export function RentTrackerTable({
           </div>
           <div className="flex gap-2 flex-wrap">
             <Select value={selectedMonth} onValueChange={onMonthChange}>
-              <SelectTrigger className="w-44 rounded-xl">
+              <SelectTrigger className="w-full sm:w-44 rounded-xl min-w-0">
                 <SelectValue placeholder="Month" />
               </SelectTrigger>
               <SelectContent>
@@ -398,8 +398,8 @@ export function RentTrackerTable({
               <p className="text-sm text-text-muted mt-1">Click &quot;Generate Rent&quot; to create records from occupancy data</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="overflow-x-auto -mx-2 sm:mx-0">
+              <Table className="min-w-[640px]">
                 <TableHeader>
                   <TableRow className="border-surface-dark">
                     <TableHead className="text-text-muted font-medium">Tenant</TableHead>
@@ -434,7 +434,7 @@ export function RentTrackerTable({
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5">
                           {r.status !== "Paid" && (
                             <Button
                               size="sm"

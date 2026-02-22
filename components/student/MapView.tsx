@@ -38,7 +38,7 @@ export function MapView({ listings, selectedId, onSelect }: MapViewProps) {
       <h2 className="font-accent text-lg font-semibold text-text-primary mb-4">
         Explore on map
       </h2>
-      <div className="h-[450px] rounded-2xl overflow-hidden border border-surface-dark shadow-soft">
+      <div className="h-[300px] sm:h-[380px] md:h-[450px] rounded-2xl overflow-hidden border border-surface-dark shadow-soft">
         <Map center={center} zoom={15} theme="light">
           <MapControls position="bottom-right" showZoom showLocate />
           {listings.map((listing) => {

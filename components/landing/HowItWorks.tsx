@@ -39,21 +39,21 @@ export function HowItWorks() {
   const { ref, isVisible } = useRevealOnScroll();
 
   return (
-    <section id="how-it-works" className="py-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="how-it-works" className="py-16 sm:py-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-20 text-center"
+          className="mb-12 sm:mb-20 text-center"
         >
-          <h2 className="font-accent text-4xl md:text-5xl font-bold tracking-tight mb-4 text-text">
+          <h2 className="font-accent text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-text">
             Get started in minutes
           </h2>
         </motion.div>
 
-        <div className="relative grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12">
           <div className="hidden md:block absolute top-16 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
           {steps.map((step, i) => {
             const Icon = step.icon;

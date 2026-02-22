@@ -112,7 +112,7 @@ export default function DiscoverPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Title & Filter Row */}
         <div className="py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h1 className="font-accent text-2xl font-bold tracking-tight text-text-primary">
+          <h1 className="font-accent text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
             Discover listings
           </h1>
           <FilterPanel filters={filters} onApply={setFilters} />

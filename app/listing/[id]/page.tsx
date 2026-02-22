@@ -50,12 +50,12 @@ export default function ListingDetailPage() {
   const amenityList = Object.entries(listing.amenities).filter(([, v]) => v);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid lg:grid-cols-3 gap-8">
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-6">
           <VirtualTourSlider images={listing.images} alt={listing.title} />
-          <div className="rounded-3xl border border-surface-dark bg-surface p-6">
-            <h1 className="text-2xl font-bold text-text-primary">{listing.title}</h1>
+          <div className="rounded-2xl sm:rounded-3xl border border-surface-dark bg-surface p-4 sm:p-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-text-primary">{listing.title}</h1>
             <p className="text-text-muted mt-2">{listing.location.address}, {listing.location.city}</p>
             <p className="mt-4 text-text-secondary">{listing.description}</p>
             <h3 className="font-semibold mt-6">Amenities</h3>
@@ -78,14 +78,14 @@ export default function ListingDetailPage() {
         </div>
         <div className="space-y-6">
           <SafetyScorecard score={listing.safetyScore} amenities={listing.amenities} />
-          <div className="rounded-3xl border border-surface-dark bg-surface p-6">
+          <div className="rounded-2xl sm:rounded-3xl border border-surface-dark bg-surface p-4 sm:p-6">
             <p className="text-2xl font-bold text-primary" suppressHydrationWarning>₹{listing.pricing.rent.toLocaleString()}<span className="text-base font-normal text-text-muted">/month</span></p>
             <p className="text-sm text-text-muted mt-1" suppressHydrationWarning>Deposit: ₹{listing.pricing.deposit.toLocaleString()}</p>
             <p className="text-sm text-text-muted mt-2">{listing.occupancy.available} beds available · {listing.gender}</p>
-            <div className="flex gap-2 mt-4">
-              <Button onClick={handleBook} className="flex-1">Book now</Button>
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
+              <Button onClick={handleBook} className="flex-1 min-w-0">Book now</Button>
               {user && (
-                <Button variant="outline" size="icon" onClick={handleSave}>{saved ? "♥" : "♡"}</Button>
+                <Button variant="outline" size="icon" onClick={handleSave} className="shrink-0">{saved ? "♥" : "♡"}</Button>
               )}
             </div>
           </div>

@@ -30,8 +30,8 @@ export default function OccupancyPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="font-accent text-2xl font-bold text-text-primary mb-8">Occupancy</h1>
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <h1 className="font-accent text-xl sm:text-2xl font-bold text-text-primary mb-6 sm:mb-8">Occupancy</h1>
       <OccupancyGrid
         listings={listings}
         selectedListingId={selectedId}

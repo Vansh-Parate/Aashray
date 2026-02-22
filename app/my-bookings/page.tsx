@@ -33,8 +33,8 @@ export default function MyBookingsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="font-accent text-2xl font-bold text-text-primary mb-8">My Bookings</h1>
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <h1 className="font-accent text-xl sm:text-2xl font-bold text-text-primary mb-6 sm:mb-8">My Bookings</h1>
       {bookings.length === 0 ? (
         <Card className="rounded-3xl">
           <CardContent className="py-12 text-center">

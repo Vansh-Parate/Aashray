@@ -11,8 +11,8 @@ export function Hero() {
   const { ref: rightRef, isVisible: rightVisible } = useRevealOnScroll();
 
   return (
-    <section className="relative min-h-screen pt-24 pb-12 lg:pt-32 lg:pb-24 flex items-center overflow-hidden gradient-mesh">
-      <div className="max-w-7xl mx-auto px-6 w-full grid lg:grid-cols-2 gap-16 items-center">
+    <section className="relative min-h-screen pt-20 sm:pt-24 pb-10 sm:pb-12 lg:pt-32 lg:pb-24 flex items-center overflow-hidden gradient-mesh">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div
           ref={leftRef}
           className={cn(
@@ -26,7 +26,7 @@ export function Hero() {
             Trusted by 10,000+ students
           </div>
 
-          <h1 className="font-accent text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tight leading-[1.1] text-text mb-6">
+          <h1 className="font-accent text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tight leading-[1.1] text-text mb-6">
             Find Your Safe <br />
             <span className="text-primary/90">Haven Away</span> <br />
             From Home
@@ -65,7 +65,7 @@ export function Hero() {
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-primary/20 to-sage/20 rounded-full blur-3xl -z-10" />
 
-          <div className="absolute top-10 right-0 sm:right-10 w-80 sm:w-96 bg-white rounded-3xl p-3 shadow-2xl shadow-primary/10 animate-float z-20 border border-white/50">
+          <div className="absolute top-6 right-0 sm:top-10 sm:right-10 w-[280px] sm:w-96 bg-white rounded-3xl p-3 shadow-2xl shadow-primary/10 animate-float z-20 border border-white/50">
             <div className="relative h-64 w-full rounded-2xl overflow-hidden mb-4">
               <Image
                 src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
