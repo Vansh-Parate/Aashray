@@ -14,7 +14,7 @@ export function CTA() {
       initial={{ opacity: 0, y: 30 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8 }}
-      className="py-20 sm:py-28 lg:py-32 relative overflow-hidden"
+      className="py-12 sm:py-20 md:py-28 lg:py-32 relative overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 -z-10" />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">

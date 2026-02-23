@@ -5,7 +5,7 @@ export function LandingFooter() {
   return (
     <footer className="bg-surface pt-20 pb-10 border-t border-text/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-10 mb-12 sm:mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8 md:gap-10 mb-8 sm:mb-12 md:mb-16">
           <div className="col-span-2 lg:col-span-2">
             <Link
               href="/"

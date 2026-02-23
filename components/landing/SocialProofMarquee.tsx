@@ -12,7 +12,7 @@ export function SocialProofMarquee() {
   const items = [...universities, ...universities];
 
   return (
-    <section className="py-10 border-y border-text/5 bg-surface/30 overflow-hidden">
+    <section className="py-6 sm:py-10 border-y border-text/5 bg-surface/30 overflow-hidden">
       <div className="relative w-full flex items-center">
         <div className="absolute left-0 w-32 h-full bg-gradient-to-r from-background to-transparent z-10" />
         <div className="absolute right-0 w-32 h-full bg-gradient-to-l from-background to-transparent z-10" />

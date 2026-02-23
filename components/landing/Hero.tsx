@@ -11,8 +11,8 @@ export function Hero() {
   const { ref: rightRef, isVisible: rightVisible } = useRevealOnScroll();
 
   return (
-    <section className="relative min-h-screen pt-20 sm:pt-24 pb-10 sm:pb-12 lg:pt-32 lg:pb-24 flex items-center overflow-hidden gradient-mesh">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="relative min-h-screen pt-14 sm:pt-16 pb-8 sm:pb-10 lg:pt-20 lg:pb-14 flex items-center overflow-hidden gradient-mesh">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full grid lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-10 items-center">
         <div
           ref={leftRef}
           className={cn(
@@ -21,18 +21,18 @@ export function Hero() {
           )}
           style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-primary/20 text-xs font-medium text-text/70 mb-8 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-primary/20 text-xs font-medium text-text/70 mb-4 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-sage animate-pulse" />
             Trusted by 10,000+ students
           </div>
 
-          <h1 className="font-accent text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tight leading-[1.1] text-text mb-6">
+          <h1 className="font-accent text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tight leading-[1.1] text-text mb-4">
             Find Your Safe <br />
             <span className="text-primary/90">Haven Away</span> <br />
             From Home
           </h1>
 
-          <p className="text-lg md:text-xl text-text/60 max-w-lg leading-relaxed mb-10">
+          <p className="text-lg md:text-xl text-text/60 max-w-lg leading-relaxed mb-6">
             Verified housing. Perfect roommates. Peace of mind. The premium marketplace for student
             living.
           </p>
@@ -58,7 +58,7 @@ export function Hero() {
         <div
           ref={rightRef}
           className={cn(
-            "relative h-[600px] w-full perspective-1000 transition-all duration-800",
+            "relative h-[480px] lg:h-[520px] w-full perspective-1000 transition-all duration-800",
             rightVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
           )}
           style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
